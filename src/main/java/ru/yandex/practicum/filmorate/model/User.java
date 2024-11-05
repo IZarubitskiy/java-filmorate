@@ -23,7 +23,7 @@ public class User {
     @NonNull
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^[^\\s]+$", message = "Логин не должен содержать пробелы")
+    @Pattern(regexp = "^\\S+$", message = "Логин не должен содержать пробелы")
     String login;
     @NonNull
     @NotNull

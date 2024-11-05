@@ -7,8 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
@@ -21,9 +20,10 @@ class FilmControllerTest {
             45);
 
     @Test
-    void customFilmValidator() {
-        assertDoesNotThrow(() -> filmController.customFilmValidator(film1), "Выкидывает исключение.");
-        assertThrows(ValidationException.class, () -> filmController.customFilmValidator(film2), "Не выкидывает исключение.");
+    void addFilm() {
+        assertDoesNotThrow(() -> filmController.addFilm(film1), "Выкидывает исключение.");
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film2), "Не выкидывает исключение.");
+        assertEquals(1,filmController.getFilms().size(), "Несоотвтетвующее количество сохраненных фильмов.");
     }
 
     @Test

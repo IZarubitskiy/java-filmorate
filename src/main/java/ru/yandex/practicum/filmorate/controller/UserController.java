@@ -21,16 +21,16 @@ public class UserController {
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
-
-        try {
-            customUserValidator(user);
-        } catch (ValidationException e) {
-            log.error("Валидация не пройдена", e);
-            return null;
+        for (User value : users.values()) {
+            if (user.getEmail().equals(value.getEmail())) {
+                log.error(String.format("Email %d уже существует.", user.getEmail()), new ValidationException("Необходим новый Email при добавлении."));
+                throw new ValidationException("Необходим новый Email при добавлении.");
+            }
         }
+
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при добавлении");
+            log.debug("Вместо имени использован логин при Добавлении");
         }
         user.setId(getNextId());
         users.put(user.getId(), user);
@@ -40,18 +40,14 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getEmail().isBlank() ||
-                user.getEmail() == null) {
-            throw new ValidationException("Пустой email");
-        }
+
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при Обновлении");
+            log.info("Вместо имени использован логин при Обновлении");
         }
         if (users.containsKey(user.getId())) {
-            // long id = idUser.getAsLong();
             users.put(user.getId(), user);
-            log.debug("Пользователь обновлен.", user);
+            log.info("Пользователь обновлен.", user);
             return user;
         }
         log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
@@ -64,25 +60,7 @@ public class UserController {
         return users.values();
     }
 
-    public void customUserValidator(User user) throws ValidationException {
-        if (user.getEmail().isBlank() ||
-                user.getEmail() == null) {
-            throw new ValidationException("Пустой email");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Email не содержит @.");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем.");
-        }
-        if (user.getLogin() == null
-                || user.getLogin().isBlank()) {
-            throw new ValidationException("Логин не может быть пустым");
-        }
-        if (user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин не должен содержать пробелы");
-        }
-    }
+
 
     private long getNextId() {
         long currentMaxId = users.keySet()
