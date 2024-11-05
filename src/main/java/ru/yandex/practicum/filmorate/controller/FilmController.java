@@ -15,6 +15,7 @@ import java.util.OptionalLong;
 
 @Slf4j
 @RestController
+@RequestMapping("/films")
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 

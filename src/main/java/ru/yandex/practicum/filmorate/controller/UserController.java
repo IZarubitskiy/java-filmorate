@@ -14,6 +14,8 @@ import java.util.OptionalLong;
 
 @Slf4j
 @RestController
+
+@RequestMapping("/users")
 public class UserController {
 
     private final Map<Long, User> users = new HashMap<>();
