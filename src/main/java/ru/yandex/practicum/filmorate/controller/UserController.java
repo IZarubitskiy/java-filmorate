@@ -51,7 +51,7 @@ public class UserController {
         if (users.containsKey(user.getId())) {
             // long id = idUser.getAsLong();
             users.put(user.getId(), user);
-        log.debug("Пользователь обновлен.", user);
+            log.debug("Пользователь обновлен.", user);
             return user;
         }
         log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
