@@ -1,27 +1,33 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
-@Slf4j
 @Data
+@EqualsAndHashCode(of = {"name"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
-    long id;
-    @NonNull
+    Long id;
+    @NotNull
     @NotBlank
+    @NonNull
     String name;
-    @Size(min = 0, max = 200)
+    @Size(max = 200, message = "Описание не может быть длиннее 200 символов")
     String description;
+    @NotNull
     @NonNull
     LocalDate releaseDate;
+    @NotNull
     @NonNull
-    @Positive
-    Duration duration;
+    @Positive(message = "Продолжительность должна быть положительным числом")
+    Integer duration;
 }

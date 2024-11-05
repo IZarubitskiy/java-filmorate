@@ -16,10 +16,10 @@ class FilmControllerTest {
     FilmController filmController = new FilmController();
     Film film1 = new Film("Прибы́тие по́езда на вокза́л Ла-Сьота",
             LocalDate.parse("06.01.1896", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-            Duration.ofSeconds(48));
+            42);
     Film film2 = new Film("Фейк по́езда на вокза́л Ла-Сьота",
             LocalDate.parse("06.01.1894", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-            Duration.ofSeconds(48));
+            45);
 
     @Test
     void customFilmValidator() {
@@ -29,6 +29,7 @@ class FilmControllerTest {
 
     @Test
     void updateFilm() {
+
         filmController.addFilm(film1);
         assertThrows(ValidationException.class, () -> filmController.updateFilm(film2), "Не выкидывает исключение.");
 

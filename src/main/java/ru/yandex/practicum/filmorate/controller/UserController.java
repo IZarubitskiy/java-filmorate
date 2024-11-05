@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.OptionalLong;
 
 @Slf4j
 @RestController
@@ -29,6 +28,10 @@ public class UserController {
             log.error("Валидация не пройдена", e);
             return null;
         }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.debug("Вместо имени использован логин при добавлении");
+        }
         user.setId(getNextId());
         users.put(user.getId(), user);
         log.debug("Пользователь добавлен.", user);
@@ -36,30 +39,23 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateUser(@Valid @RequestBody User user) throws ValidationException {
-
-        try {
-            customUserValidator(user);
-        } catch (ValidationException e) {
-            log.error("Валидация не пройдена", e);
-            return;
+    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+        if (user.getEmail().isBlank() ||
+                user.getEmail() == null) {
+            throw new ValidationException("Пустой email");
         }
-
-        OptionalLong idUser = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .filter(id -> user.equals(users.get(id)))
-                .findFirst();
-
-        if (idUser.isEmpty()) {
-            log.error("Валидация не пройдена", new ValidationException("Пользователь, которого необходимо обновить, не существует."));
-            throw new ValidationException("Пользователь, которого необходимо обновить, не существует.");
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.debug("Вместо имени использован логин при Обновлении");
         }
-
-        long id = idUser.getAsLong();
-        users.put(id, user);
+        if (users.containsKey(user.getId())) {
+            // long id = idUser.getAsLong();
+            users.put(user.getId(), user);
         log.debug("Пользователь обновлен.", user);
-
+            return user;
+        }
+        log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
+        throw new ValidationException(String.format("Пользователь с id = %d  - не найден", user.getId()));
     }
 
 

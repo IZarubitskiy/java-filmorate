@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -11,22 +12,26 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.OptionalLong;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+    @Getter
     private final Map<Long, Film> films = new HashMap<>();
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        try {
-            customFilmValidator(film);
-        } catch (ValidationException e) {
-            log.error("Валидация не пройдена", e);
+    public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
+        for (Film value : films.values()) {
+            if (film.getName().equals(value.getName())) {
+                log.error("Такое название уже есть");
+                throw new ValidationException("Дублирование названия при добавлении");
+            }
         }
 
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
+        }
         film.setId(getNextId());
         films.put(film.getId(), film);
         log.debug("Фильм добавлен.", film);
@@ -34,36 +39,24 @@ public class FilmController {
     }
 
     @PutMapping
-    public void updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        try {
-            customFilmValidator(film);
-        } catch (ValidationException e) {
-            log.error("Валидация не пройдена", e);
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        if (film.getId() == null) {
+            log.error("Фильм, который необходимо обновить, не существует.");
+            throw new ValidationException("Id должен быть указан");
+
         }
-
-        OptionalLong idFilm = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .filter(id -> film.equals(films.get(id)))
-                .findFirst();
-
-        if (idFilm.isEmpty()) {
-            log.error("Валидация не пройдена", new ValidationException("Фильм, который необходимо обновить, не существует."));
-            throw new ValidationException("Фильм, который необходимо обновить, не существует.");
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
-
-        long id = idFilm.getAsLong();
-        films.put(id, film);
-        log.debug("Фильм обновлен.", film);
-
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            log.debug("Фильм обновлен.", film);
+            return film;
+        }
+        log.error("Попытка получить фильм с несуществующим id = {}", film.getId());
+        throw new ValidationException(String.format("Фильм с id = %d  - не найден", film.getId()));
     }
 
-    @GetMapping
-    public Collection<Film> findAllFilms() {
-        log.trace("Фильмы получены.", films.values());
-        return films.values();
-
-    }
 
     public void customFilmValidator(Film film) throws ValidationException {
         if (film.getName().isBlank() ||
@@ -75,13 +68,22 @@ public class FilmController {
                 throw new ValidationException("Описание содержит более 200 символов.");
             }
         }
-        if (film.getDuration().isNegative()) {
+        if (film.getDuration() < 0) {
             throw new ValidationException("Продолжительность фильма отрицательная.");
         }
         if (film.getReleaseDate().isBefore(LocalDate.parse("28.12.1895", DateTimeFormatter.ofPattern("dd.MM.yyyy")))) {
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
     }
+
+
+    @GetMapping
+    public Collection<Film> findAllFilms() {
+        log.trace("Фильмы получены.", films.values());
+        return films.values();
+
+    }
+
 
     private long getNextId() {
         long currentMaxId = films.keySet()
