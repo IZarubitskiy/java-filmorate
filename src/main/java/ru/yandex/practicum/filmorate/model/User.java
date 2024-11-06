@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,18 +18,16 @@ import java.time.LocalDate;
 public class User {
     Long id;
     @NonNull
-    @NotNull
     @NotBlank
     @Email
     String email;
     String name;
     @NonNull
-    @NotNull
     @NotBlank
     @Pattern(regexp = "^\\S+$", message = "Логин не должен содержать пробелы")
     String login;
     @NonNull
-    @NotNull
+    @NotBlank
     @Past
     LocalDate birthday;
 }

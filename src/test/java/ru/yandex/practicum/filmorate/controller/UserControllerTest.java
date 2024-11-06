@@ -26,8 +26,8 @@ class UserControllerTest {
 
     @Test
     void addUser() {
-        assertDoesNotThrow(() -> userController.customUserValidator(user1), "Выкидывает исключение.");
-        assertThrows(ValidationException.class, () -> userController.customUserValidator(user2), "Не выкидывает исключение.");
+        assertDoesNotThrow(() -> userController.addUser(user1), "Выкидывает исключение.");
+        assertThrows(ValidationException.class, () -> userController.addUser(user2), "Не выкидывает исключение.");
     }
 
     @Test

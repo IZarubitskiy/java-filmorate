@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -17,16 +16,15 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     Long id;
-    @NotNull
     @NotBlank
     @NonNull
     String name;
     @Size(max = 200, message = "Описание не может быть длиннее 200 символов")
     String description;
-    @NotNull
+    @NotBlank
     @NonNull
     LocalDate releaseDate;
-    @NotNull
+    @NotBlank
     @NonNull
     @Positive(message = "Продолжительность должна быть положительным числом")
     Integer duration;
