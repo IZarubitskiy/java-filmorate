@@ -23,7 +23,7 @@ class FilmControllerTest {
     void addFilm() {
         assertDoesNotThrow(() -> filmController.addFilm(film1), "Выкидывает исключение.");
         assertThrows(ValidationException.class, () -> filmController.addFilm(film2), "Не выкидывает исключение.");
-        assertEquals(1,filmController.getFilms().size(), "Несоотвтетвующее количество сохраненных фильмов.");
+        assertEquals(1,filmController.findAllFilms().size(), "Несоотвтетвующее количество сохраненных фильмов.");
     }
 
     @Test
