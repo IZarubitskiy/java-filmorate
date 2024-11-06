@@ -12,7 +12,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-
 @RequestMapping("/users")
 public class UserController {
     private final Map<Long, User> users = new HashMap<>();
@@ -31,8 +30,9 @@ public class UserController {
             log.debug("Вместо имени использован логин при Добавлении");
         }
         user.setId(getNextId());
+        log.debug("Пользователю \"{}\" назначен id = {}", user.getName(), user.getId());
         users.put(user.getId(), user);
-        log.debug("Пользователь добавлен.");
+        log.info("Пользователь добавлен.");
         return user;
     }
 
@@ -41,7 +41,7 @@ public class UserController {
 
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-            log.info("Вместо имени использован логин при Обновлении");
+            log.debug("Вместо имени использован логин при Обновлении");
         }
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
@@ -54,6 +54,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> findAllUsers() {
+        log.info("Получен список Пользователей.");
         return users.values();
     }
 

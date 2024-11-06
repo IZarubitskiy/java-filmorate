@@ -32,10 +32,11 @@ public class FilmController {
             log.error("Дата фильма дана неверно.", new ValidationException("Выбрана дата до 28 декабря 1895 года."));
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
+
         film.setId(getNextId());
         log.debug("Фильму \"{}\" назначен id = {}", film.getName(), film.getId());
         films.put(film.getId(), film);
-        log.info("Фильм добавлен.");
+        log.info("Фильм \"{}\" с id = {} - добавлен", film.getName(), film.getId());
         return film;
     }
 
@@ -52,7 +53,7 @@ public class FilmController {
         }
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-            log.info("Фильм обновлен.");
+            log.info("Фильм \"{}\" с id = {} - обновлен", film.getName(), film.getId());
             return film;
         }
         log.error("Попытка получить фильм с несуществующим id = {}", film.getId());
@@ -61,7 +62,7 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> findAllFilms() {
-        log.trace("Фильмы получены.");
+        log.info("Получен список фильмов.");
         return films.values();
     }
 

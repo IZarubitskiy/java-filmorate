@@ -16,7 +16,6 @@ class UserControllerTest {
     User user1 = new User("karamba@bat.com",
             "ElBarto",
             LocalDate.parse("23.02.1979", DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-    User user2 = new User("", "", LocalDate.parse("23.02.1979", DateTimeFormatter.ofPattern("dd.MM.yyyy")));
     User user3 = new User("saxgirl@bat.com",
             "LizaS",
             LocalDate.parse("23.02.1979", DateTimeFormatter.ofPattern("dd.MM.yyyy")));
