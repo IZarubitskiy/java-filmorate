@@ -35,6 +35,6 @@ class UserControllerTest {
         userController.addUser(user1);
         assertThrows(ValidationException.class, () -> userController.updateUser(user3), "Не выкидывает исключение.");
         userController.addUser(user4);
-        System.out.println(userController.findAllUserss());
+        System.out.println(userController.findAllUsers());
     }
 }

@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<User> findAllUserss() {
+    public Collection<User> findAllUsers() {
         return users.values();
     }
 
