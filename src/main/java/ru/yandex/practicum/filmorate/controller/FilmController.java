@@ -12,11 +12,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    @Getter
     private final Map<Long, Film> films = new HashMap<>();
 
     @PostMapping
@@ -35,7 +35,7 @@ public class FilmController {
         film.setId(getNextId());
         log.debug("Фильму \"{}\" назначен id = {}", film.getName(), film.getId());
         films.put(film.getId(), film);
-        log.info("Фильм добавлен.", film);
+        log.info("Фильм добавлен.");
         return film;
     }
 
@@ -52,7 +52,7 @@ public class FilmController {
         }
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-            log.info("Фильм обновлен.", film);
+            log.info("Фильм обновлен.");
             return film;
         }
         log.error("Попытка получить фильм с несуществующим id = {}", film.getId());
@@ -61,7 +61,7 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> findAllFilms() {
-        log.trace("Фильмы получены.", films.values());
+        log.trace("Фильмы получены.");
         return films.values();
     }
 
