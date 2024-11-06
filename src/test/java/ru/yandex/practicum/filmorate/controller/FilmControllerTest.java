@@ -28,10 +28,7 @@ class FilmControllerTest {
 
     @Test
     void updateFilm() {
-
         filmController.addFilm(film1);
         assertThrows(ValidationException.class, () -> filmController.updateFilm(film2), "Не выкидывает исключение.");
-
-
     }
 }
