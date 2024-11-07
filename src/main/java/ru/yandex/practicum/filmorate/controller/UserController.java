@@ -20,7 +20,7 @@ public class UserController {
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
         for (User value : users.values()) {
             if (user.getEmail().equals(value.getEmail())) {
-                log.error(String.format("Email %s уже существует.", user.getEmail()), new ValidationException("Необходим новый Email при добавлении."));
+                log.error(String.format("Email %s уже существует.", user.getEmail()));
                 throw new ValidationException("Необходим новый Email при добавлении.");
             }
         }

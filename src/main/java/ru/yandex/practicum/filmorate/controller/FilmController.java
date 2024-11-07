@@ -23,13 +23,13 @@ public class FilmController {
     public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
         for (Film value : films.values()) {
             if (film.getName().equals(value.getName())) {
-                log.error("Такое название уже есть", new ValidationException("Дублирование названия при добавлении"));
+                log.error("Такое название уже есть");
                 throw new ValidationException("Дублирование названия при добавлении");
             }
         }
 
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.error("Дата фильма дана неверно.", new ValidationException("Выбрана дата до 28 декабря 1895 года."));
+            log.error("При добавлении выбрана не соответствующая дата фильма.");
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
 
@@ -43,12 +43,12 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
         if (film.getId() == null) {
-            log.error("Id не указан", new ValidationException("Id должен быть указан"));
+            log.error("Id не указан");
             throw new ValidationException("Id должен быть указан");
 
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.error("Дата фильма дана неверно.", new ValidationException("Выбрана дата до 28 декабря 1895 года."));
+            log.error("При обновлении выбрана не соответствующая дата фильма.");
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
         if (films.containsKey(film.getId())) {
