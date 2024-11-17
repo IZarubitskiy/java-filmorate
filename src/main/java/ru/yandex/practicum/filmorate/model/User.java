@@ -6,6 +6,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(of = { "email" })
@@ -24,4 +26,5 @@ public class User {
     @NonNull
     @Past
     LocalDate birthday;
+    Set<Long> friends = new HashSet<>();
 }
