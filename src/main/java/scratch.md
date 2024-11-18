@@ -18,8 +18,6 @@ throw new ValidationException("Выбрана дата до 28 декабря 18
 }
 */
 
-
-
     public void customUserValidator(User user) throws ValidationException {
         if (user.getEmail().isBlank() ||
                 user.getEmail() == null) {

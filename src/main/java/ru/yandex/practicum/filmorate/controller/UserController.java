@@ -1,69 +1,62 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
-@Slf4j
 @RestController
-@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-    private final Map<Long, User> users = new HashMap<>();
+    private final UserService userService;
 
-    @PostMapping
-    public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        for (User value : users.values()) {
-            if (user.getEmail().equals(value.getEmail())) {
-                log.error(String.format("Email %s уже существует.", user.getEmail()));
-                throw new ValidationException("Необходим новый Email при добавлении.");
-            }
-        }
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при Добавлении");
-        }
-        user.setId(getNextId());
-        log.debug("Пользователю \"{}\" назначен id = {}", user.getName(), user.getId());
-        users.put(user.getId(), user);
-        log.info("Пользователь добавлен.");
-        return user;
-    }
-
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при Обновлении");
-        }
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("Пользователь обновлен.");
-            return user;
-        }
-        log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
-        throw new ValidationException(String.format("Пользователь с id = %d  - не найден", user.getId()));
-    }
-
-    @GetMapping
+    @GetMapping("/users")
     public Collection<User> findAllUsers() {
-        log.info("Получен список Пользователей.");
-        return users.values();
+        return userService.findAll();
     }
 
-    private long getNextId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    @PostMapping("/users")
+    public User create(@Valid @RequestBody User user) {
+        return userService.create(user);
+    }
+
+    @PutMapping("/users")
+    public User update(@Valid @RequestBody User user) {
+        return userService.update(user);
+    }
+
+    @GetMapping("/users/{id}")
+    public Optional<User> findByID(@PathVariable("id") Long id) {
+        return userService.findById(id);
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public User addFriend(
+            @PathVariable("id") Long id,
+            @PathVariable("friendId") Long friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public User removerFriend(
+            @PathVariable("id") Long id,
+            @PathVariable("friendId") Long friendId) {
+        return userService.removerFriend(id, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public Collection<User> getFriends(@PathVariable("id") Long id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(
+            @PathVariable("id") Long id,
+            @PathVariable("otherId") Long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 }
