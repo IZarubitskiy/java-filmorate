@@ -85,15 +85,7 @@ public class FilmService {
 
          Collection<Film> popularFilms = filmStorage.findAll()
                 .stream()
-                .sorted((o1, o2) -> {
-                    if (o1.getLikes() > o2.getLikes()) {
-                        return -1;
-                    } else if (o1.getLikes() < o2.getLikes()) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                })
+                .sorted((o1, o2) -> o2.getLikes().compareTo(o1.getLikes()))
                  .limit(count)
                 .collect(Collectors.toList());
         log.debug("Получена коллекция фильмов начиная с 1 и до {} ", count);
