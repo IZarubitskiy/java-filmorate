@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,11 @@ public class UserService {
         return userStorage.update(newUser);
     }
 
-    public User addFriend(Long userId, long friendId){
+    public Optional<User> findById(Long id) {
+        return userStorage.findById(id);
+    }
+
+    public User addFriend(Long userId, Long friendId) {
         User user = userStorage.findById(userId).orElseThrow(()-> new NotFoundException(msg));
         User friend = userStorage.findById(friendId).orElseThrow(() -> new NotFoundException(msg));
 
@@ -82,10 +87,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<User> getCommonFriends(Long userId, long friendId) {
+    public Collection<User> getCommonFriends(Long userId, long otherId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new NotFoundException(msg));
-        User userFriend = userStorage.findById(friendId)
+        User userFriend = userStorage.findById(otherId)
                 .orElseThrow(() -> new NotFoundException(msg));
         Set<Long> currentUserFriends = user.getFriends();
         Set<Long> friendFriends = userFriend.getFriends();

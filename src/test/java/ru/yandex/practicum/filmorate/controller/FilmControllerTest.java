@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
-    FilmController filmController = new FilmController();
+    FilmController filmController;
     Film film1 = new Film("Прибы́тие по́езда на вокза́л Ла-Сьота",
             LocalDate.parse("06.01.1896", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
             42);
@@ -21,14 +21,14 @@ class FilmControllerTest {
 
     @Test
     void addFilm() {
-        assertDoesNotThrow(() -> filmController.addFilm(film1), "Выкидывает исключение.");
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film2), "Не выкидывает исключение.");
-        assertEquals(1,filmController.findAllFilms().size(), "Несоотвтетвующее количество сохраненных фильмов.");
+        assertDoesNotThrow(() -> filmController.create(film1), "Выкидывает исключение.");
+        assertThrows(ValidationException.class, () -> filmController.create(film2), "Не выкидывает исключение.");
+        assertEquals(1, filmController.findAll().size(), "Несоотвтетвующее количество сохраненных фильмов.");
     }
 
     @Test
-    void updateFilm() {
-        filmController.addFilm(film1);
-        assertThrows(ValidationException.class, () -> filmController.updateFilm(film2), "Не выкидывает исключение.");
+    void update() {
+        filmController.create(film1);
+        assertThrows(ValidationException.class, () -> filmController.update(film2), "Не выкидывает исключение.");
     }
 }

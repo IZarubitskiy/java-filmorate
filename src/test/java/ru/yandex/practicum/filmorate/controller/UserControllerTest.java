@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserControllerTest {
-    UserController userController = new UserController();
+    UserController userController;
 
     User user1 = new User("karamba@bat.com",
             "ElBarto",
@@ -24,16 +24,16 @@ class UserControllerTest {
             LocalDate.parse("23.02.1979", DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
     @Test
-    void addUser() {
-        assertDoesNotThrow(() -> userController.addUser(user1), "Выкидывает исключение.");
-        assertThrows(ValidationException.class, () -> userController.addUser(user1), "Не выкидывает исключение.");
+    void create() {
+        assertDoesNotThrow(() -> userController.create(user1), "Выкидывает исключение.");
+        assertThrows(ValidationException.class, () -> userController.create(user1), "Не выкидывает исключение.");
     }
 
     @Test
-    void updateUser() {
-        userController.addUser(user1);
-        assertThrows(ValidationException.class, () -> userController.updateUser(user3), "Не выкидывает исключение.");
-        userController.addUser(user4);
+    void update() {
+        userController.create(user1);
+        assertThrows(ValidationException.class, () -> userController.update(user3), "Не выкидывает исключение.");
+        userController.create(user4);
         System.out.println(userController.findAllUsers());
     }
 }

@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DuplicationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -29,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         for (Film value : films.values()) {
             if (film.getName().equals(value.getName())) {
                 log.error("Такое название уже есть");
-                throw new ValidationException("Дублирование названия при добавлении");
+                throw new DuplicationException("Дублирование названия при добавлении");
             }
         }
 
@@ -69,6 +71,17 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Optional<Film> findById(Long id) {
         log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
         return Optional.ofNullable(films.get(id));
+    }
+
+    @Override
+    public void updateLikes(Film film) {
+        if (films.containsKey(film.getId())) {
+            Film filmStored = films.get(film.getId());
+            filmStored.setLikes(film.getLikes());
+            log.debug("Фильм с id = {} обновлён с новым количеством лайков", film.getId());
+        } else {
+            throw new NotFoundException("Фильм не найден");
+        }
     }
 
     private long getNextId() {

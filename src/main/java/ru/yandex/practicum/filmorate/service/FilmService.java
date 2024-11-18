@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +35,10 @@ public class FilmService {
         return filmStorage.update(newFilm);
     }
 
+    public Optional<Film> findById(Long id) {
+        return filmStorage.findById(id);
+    }
+
     public Film like(Long filmId, Long userId) {
         User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msgUser));
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
@@ -47,8 +52,10 @@ public class FilmService {
         log.debug("Добавление в список любимых фильмов пользователя с id = {} фильма с id = {}.", userId, filmId);
         film.increaseLikes();
         log.debug("Увеличение количества лайков фильма с id = {}.", filmId);
+        filmStorage.updateLikes(film);
+        log.debug("Обновление количества лайков фильма с id= {}. в базе фильмов", filmId);
         userStorage.updateFriends(user);
-        log.debug("Обновление списка любимых фильмов пользователя с is= {} в базе пользователей, после лайка фильма.", userId);
+        log.debug("Обновление списка любимых фильмов пользователя с id= {} в базе пользователей.", userId);
         log.info("Пользователь с id = {} поставил лайк фильму с id = {}.", userId, filmId);
         return film;
     }
@@ -72,7 +79,7 @@ public class FilmService {
         return film;
     }
 
-    public Collection<Film> getPopular(int limit) {
+    public Collection<Film> getPopular(int count) {
 
          Collection<Film> popularFilms = filmStorage.findAll()
                 .stream()
@@ -85,14 +92,14 @@ public class FilmService {
                         return 0;
                     }
                 })
-                .limit(limit)
+                 .limit(count)
                 .collect(Collectors.toList());
-        log.debug("Получена коллекция фильмов начиная с 1 и до {} ", limit);
+        log.debug("Получена коллекция фильмов начиная с 1 и до {} ", count);
         if (popularFilms.isEmpty()) {
             log.error("Попытка получить пустой список популярных фильмов");
             throw new NotFoundException("Список популярных фильмов пуст");
         }
-        log.info("Список популярных фильмов получен пользователем, начиная с 1 и до {}", limit );
+        log.info("Список популярных фильмов получен пользователем, начиная с 1 и до {}", count);
         return popularFilms;
     }
 }
