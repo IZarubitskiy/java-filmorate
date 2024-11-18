@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(of = { "email" })
+@EqualsAndHashCode(of = {"email"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     Long id;

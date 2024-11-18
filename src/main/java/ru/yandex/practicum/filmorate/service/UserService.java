@@ -38,10 +38,10 @@ public class UserService {
     }
 
     public User addFriend(Long userId, Long friendId) {
-        User user = userStorage.findById(userId).orElseThrow(()-> new NotFoundException(msg));
+        User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msg));
         User friend = userStorage.findById(friendId).orElseThrow(() -> new NotFoundException(msg));
 
-        if (user.getFriends().contains(friendId)){
+        if (user.getFriends().contains(friendId)) {
             log.error("Добавление в друзья пользователя, являющегося другом.");
             throw new ValidationException("Пользователь уже является другом.");
         }
@@ -62,8 +62,8 @@ public class UserService {
         return user;
     }
 
-    public User removerFriend(Long userId, long notFriendId){
-        User user = userStorage.findById(userId).orElseThrow(()-> new NotFoundException(msg));
+    public User removerFriend(Long userId, long notFriendId) {
+        User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msg));
         User friend = userStorage.findById(notFriendId).orElseThrow(() -> new NotFoundException(msg));
 
 
