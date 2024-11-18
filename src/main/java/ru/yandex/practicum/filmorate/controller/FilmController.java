@@ -10,46 +10,45 @@ import java.util.Collection;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
 
-    @GetMapping
+    @GetMapping("/films")
     public Collection<Film> findAll() {
         return filmService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) {
         return filmService.create(film);
     }
 
-    @PutMapping
+    @PutMapping("/films")
     public Film update(@Valid @RequestBody Film film) {
         return filmService.update(film);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/films/{id}")
     public Optional<Film> findByID(@PathVariable("id") Long id) {
         return filmService.findById(id);
     }
 
-    @PutMapping("{id}/like/{userId}")
+    @PutMapping("/films/{id}/like/{userId}")
     public Film like(
             @PathVariable("id") Long id,
             @PathVariable("userId") Long userId) {
         return filmService.like(id, userId);
     }
 
-    @DeleteMapping("{id}/like/{userId}")
+    @DeleteMapping("/films/{id}/like/{userId}")
     public Film unlike(
             @PathVariable("id") Long id,
             @PathVariable("userId") Long userId) {
         return filmService.unlike(id, userId);
     }
 
-    @GetMapping("popular")
+    @GetMapping("/films/popular")
     public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopular(count);
     }

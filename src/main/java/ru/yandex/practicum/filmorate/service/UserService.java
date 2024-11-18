@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DuplicationException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -43,7 +43,12 @@ public class UserService {
 
         if (user.getFriends().contains(friendId)){
             log.error("Добавление в друзья пользователя, являющегося другом.");
-            throw new DuplicationException("Пользователь уже является другом.");
+            throw new ValidationException("Пользователь уже является другом.");
+        }
+
+        if (friend.getFriends().contains(userId)) {
+            log.error("Добавление в друзья пользователя, являющегося другом.");
+            throw new ValidationException("Пользователь уже является другом.");
         }
         user.getFriends().add(friendId);
         log.debug("Добавление в список друзей инициатора с id = {} друга с id = {}.", userId, friendId);
@@ -60,10 +65,8 @@ public class UserService {
     public User removerFriend(Long userId, long notFriendId){
         User user = userStorage.findById(userId).orElseThrow(()-> new NotFoundException(msg));
         User friend = userStorage.findById(notFriendId).orElseThrow(() -> new NotFoundException(msg));
-        if (!user.getFriends().contains(notFriendId)){
-            log.error("Удаление пользователя, не являющегося другом.");
-            throw new DuplicationException("Пользователь еще не ваш друг.");
-        }
+
+
         user.getFriends().remove(notFriendId);
         log.debug("Удаление из списка друзей инициатора с id = {} друга с id = {}.", userId, notFriendId);
         friend.getFriends().remove(userId);
@@ -90,13 +93,13 @@ public class UserService {
     public Collection<User> getCommonFriends(Long userId, long otherId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new NotFoundException(msg));
-        User userFriend = userStorage.findById(otherId)
+        User otherUser = userStorage.findById(otherId)
                 .orElseThrow(() -> new NotFoundException(msg));
         Set<Long> currentUserFriends = user.getFriends();
-        Set<Long> friendFriends = userFriend.getFriends();
+        Set<Long> friendFriends = otherUser.getFriends();
         log.info("Получен список общих друзей пользователя с id = {} и пользователя с id = {}",
                 user.getId(),
-                userFriend.getId());
+                otherUser.getId());
         return currentUserFriends.stream()
                 .filter(friendFriends::contains)
                 .map(id -> userStorage.findById(id)

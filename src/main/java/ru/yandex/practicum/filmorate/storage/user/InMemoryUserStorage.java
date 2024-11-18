@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -46,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(@Valid @RequestBody User user) throws ValidationException {
+    public User update(User user) throws ValidationException {
 
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -58,7 +56,7 @@ public class InMemoryUserStorage implements UserStorage {
             return user;
         }
         log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
-        throw new ValidationException(String.format("Пользователь с id = %d  - не найден", user.getId()));
+        throw new NotFoundException(String.format("Пользователь с id = %d  - не найден", user.getId()));
     }
 
     @Override
@@ -73,6 +71,17 @@ public class InMemoryUserStorage implements UserStorage {
             userStored.setFriends(user.getFriends());
         } else {
             throw new NotFoundException("Пользователь не найден");
+        }
+    }
+
+    @Override
+    public void updateLikes(User user) {
+        if (users.containsKey(user.getId())) {
+            User userStored = users.get(user.getId());
+            userStored.setLikedFilms(user.getLikedFilms());
+            log.debug("Фильм с id = {} обновлён с новым количеством лайков", user.getId());
+        } else {
+            throw new NotFoundException("Фильм не найден");
         }
     }
 
