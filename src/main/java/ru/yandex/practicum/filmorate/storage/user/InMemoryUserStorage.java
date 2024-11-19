@@ -19,7 +19,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Collection<User> findAll() {
-        log.info("Получен список Пользователей.");
+        log.info("Получен список пользователей.");
         return users.values();
     }
 
@@ -27,14 +27,15 @@ public class InMemoryUserStorage implements UserStorage {
     public User create(User user) throws ValidationException {
         for (User value : users.values()) {
             if (user.getEmail().equals(value.getEmail())) {
-                log.error(String.format("Email %s уже существует.", user.getEmail()));
+                log.error("Email {} уже существует.", user.getEmail());
                 throw new ValidationException("Необходим новый Email при добавлении.");
             }
         }
 
         if (user.getName() == null || user.getName().isBlank()) {
+            log.warn("Имя не задано при добавлении.");
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при Добавлении");
+            log.debug("Вместо имени использован логин {} при добавлении", user.getLogin());
         }
         user.setId(getNextId());
         log.debug("Пользователю \"{}\" назначен id = {}", user.getName(), user.getId());
@@ -45,10 +46,10 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) throws ValidationException {
-
         if (user.getName() == null || user.getName().isBlank()) {
+            log.warn("Имя не задано при обновлении.");
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при Обновлении");
+            log.debug("Вместо имени использован логин {} при обновлении", user.getLogin());
         }
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
@@ -61,7 +62,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Optional<User> findById(Long id) {
-        log.debug("Выполняем поиск пользователя по id = {} ", id);
+        log.info("Поиск пользователя по id.");
         return Optional.ofNullable(users.get(id));
     }
 
@@ -69,8 +70,10 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.containsKey(user.getId())) {
             User userStored = users.get(user.getId());
             userStored.setFriends(user.getFriends());
+            log.debug("Список друзей пользователя с id = {} обновлён.", user.getId());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            log.error("Попытка обновить друзей не существующего пользователя.");
+            throw new NotFoundException(String.format("Пользователь с id = %d  - не найден", user.getId()));
         }
     }
 
@@ -79,9 +82,10 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.containsKey(user.getId())) {
             User userStored = users.get(user.getId());
             userStored.setLikedFilms(user.getLikedFilms());
-            log.debug("Фильм с id = {} обновлён с новым количеством лайков", user.getId());
+            log.debug("Список любимых фильмов пользователя с id = {} обновлён.", user.getId());
         } else {
-            throw new NotFoundException("Фильм не найден");
+            log.error("Попытка обновить любимые фильмы не существующего пользователя.");
+            throw new NotFoundException(String.format("Пользователь с id = %d  - не найден", user.getId()));
         }
     }
 
