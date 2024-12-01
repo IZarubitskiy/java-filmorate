@@ -77,7 +77,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void updateLikes(Film film) {
         if (films.containsKey(film.getId())) {
             Film filmStored = films.get(film.getId());
-            filmStored.setLikes(film.getLikes());
+            filmStored.setRate(film.getRate());
             log.debug("Фильм с id = {} обновлён с новым количеством лайков", film.getId());
         } else {
             log.error("Попытка обновить фильм с несуществующим id = {}", film.getId());

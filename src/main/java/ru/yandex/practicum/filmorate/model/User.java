@@ -11,7 +11,9 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -31,6 +33,7 @@ public class User {
     @NonNull
     @Past
     LocalDate birthday;
-    Set<Long> friends = new HashSet<>();
+    //Set<Long> friends = new HashSet<>();
     Set<Long> likedFilms = new HashSet<>();
+    Map<Long, Friendship> friends = new HashMap<>();
 }

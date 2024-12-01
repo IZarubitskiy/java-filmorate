@@ -65,7 +65,7 @@ public class InMemoryUserStorage implements UserStorage {
         log.info("Поиск пользователя по id.");
         return Optional.ofNullable(users.get(id));
     }
-
+// переделать используя дружбу
     public void updateFriends(User user) {
         if (users.containsKey(user.getId())) {
             User userStored = users.get(user.getId());
