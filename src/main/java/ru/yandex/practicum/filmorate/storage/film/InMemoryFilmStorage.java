@@ -80,7 +80,6 @@ public class InMemoryFilmStorage implements FilmStorage {
             filmStored.setLikes(film.getLikes());
             log.debug("Фильм с id = {} обновлён с новым количеством лайков", film.getId());
         } else {
-            log.error("Попытка обновить фильм с несуществующим id = {}", film.getId());
             throw new NotFoundException("Фильм не найден");
         }
     }
