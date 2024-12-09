@@ -31,15 +31,15 @@ public class InMemoryUserStorageTest {
             LocalDate.parse("23.02.1979", DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
     @Test
-    void create() {
-        assertDoesNotThrow(() -> inMemoryUserStorage.create(user1), "Выкидывает исключение.");
-        assertThrows(ValidationException.class, () -> inMemoryUserStorage.create(user1), "Не выкидывает исключение.");
+    void add() {
+        assertDoesNotThrow(() -> inMemoryUserStorage.add(user1), "Выкидывает исключение.");
+        assertThrows(ValidationException.class, () -> inMemoryUserStorage.add(user1), "Не выкидывает исключение.");
     }
 
     @Test
     void update() {
         assertThrows(NotFoundException.class, () -> inMemoryUserStorage.update(user3), "Не выкидывает исключение.");
-        inMemoryUserStorage.create(user4);
-        System.out.println(inMemoryUserStorage.findAll());
+        inMemoryUserStorage.add(user4);
+        System.out.println(inMemoryUserStorage.get());
     }
 }

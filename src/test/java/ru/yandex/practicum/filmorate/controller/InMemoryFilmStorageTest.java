@@ -29,7 +29,7 @@ public class InMemoryFilmStorageTest {
     void addFilm() {
         assertDoesNotThrow(() -> inMemoryFilmStorage.create(film1), "Выкидывает исключение.");
         assertThrows(ValidationException.class, () -> inMemoryFilmStorage.create(film2), "Не выкидывает исключение.");
-        assertEquals(1, inMemoryFilmStorage.findAll().size(), "Несоотвтетвующее количество сохраненных фильмов.");
+        assertEquals(1, inMemoryFilmStorage.get().size(), "Несоотвтетвующее количество сохраненных фильмов.");
     }
 
     @Test

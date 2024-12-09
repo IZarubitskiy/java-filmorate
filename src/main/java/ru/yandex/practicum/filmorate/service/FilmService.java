@@ -24,7 +24,7 @@ public class FilmService {
     private final String msgFilm = "Фильм не найден";
 
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        return filmStorage.get();
     }
 
     public Film create(Film film) {
@@ -40,7 +40,7 @@ public class FilmService {
     }
 
     public Film like(Long filmId, Long userId) {
-        User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msgUser));
+        User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
 
         if (user.getLikedFilms().contains(filmId)) {
@@ -54,14 +54,14 @@ public class FilmService {
         log.debug("Увеличение количества лайков фильма с id = {}.", filmId);
         filmStorage.updateLikes(film);
         log.debug("Обновление количества лайков фильма с id= {}. в базе фильмов", filmId);
-        userStorage.updateFriends(user);
+        userStorage.updateLikes(user);
         log.debug("Обновление списка любимых фильмов пользователя с id= {} в базе пользователей, лайк.", userId);
         log.info("Пользователь с id = {} поставил лайк фильму с id = {}.", userId, filmId);
         return film;
     }
 
     public Film unlike(Long filmId, Long userId) {
-        User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msgUser));
+        User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
 
         if (user.getLikedFilms().contains(filmId)) {
@@ -83,9 +83,9 @@ public class FilmService {
 
     public Collection<Film> getPopular(int count) {
 
-        Collection<Film> popularFilms = filmStorage.findAll()
+        Collection<Film> popularFilms = filmStorage.get()
                 .stream()
-                .sorted((o1, o2) -> o2.getLikes().compareTo(o1.getLikes()))
+                .sorted((o1, o2) -> o2.getRating().compareTo(o1.getRating()))
                 .limit(count)
                 .collect(Collectors.toList());
         log.debug("Получена коллекция фильмов начиная с 1 и до {} ", count);

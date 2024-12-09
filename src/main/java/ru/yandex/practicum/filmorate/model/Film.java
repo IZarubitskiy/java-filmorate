@@ -3,17 +3,19 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(of = {"name"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Film {
     Long id;
     @NonNull
@@ -26,15 +28,17 @@ public class Film {
     @NonNull
     @Positive(message = "Продолжительность должна быть положительным числом")
     Integer duration;
-    Long likes = 0L;
+    Long rating = 0L;
+    Mpa mpa;
+    private Collection<Genre> genres = new ArrayList<>();
 
     public void increaseLikes() {
-        likes++;
+        rating++;
     }
 
     public void decreaseLikes() {
-        if (likes > 0) {
-            likes--;
+        if (rating > 0) {
+            rating--;
         }
     }
 

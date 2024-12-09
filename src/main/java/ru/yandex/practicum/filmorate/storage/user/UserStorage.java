@@ -7,15 +7,17 @@ import java.util.Optional;
 
 public interface UserStorage {
 
-    Collection<User> findAll();
+    Collection<User> get();
 
-    User create(User user);
+    User add(User user);
 
     User update(User user);
 
-    Optional<User> findById(Long id);
+    Optional<User> getById(Long id);
 
-    void updateFriends(User user);
+    Collection<User> getFriends(Integer userId);
 
-    void updateLikes(User user);
+    Collection<User> getCommonFriends(Integer user1Id, Integer user2Id);
+
+    boolean deleteUserById(Integer id);
 }

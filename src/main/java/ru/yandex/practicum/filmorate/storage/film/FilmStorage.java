@@ -7,14 +7,12 @@ import java.util.Optional;
 
 public interface FilmStorage {
 
-    Collection<Film> findAll();
+    Collection<Film> get();
 
     Film create(Film film);
 
     Film update(Film film);
 
     Optional<Film> findById(Long id);
-
-    void updateLikes(Film film);
 
 }

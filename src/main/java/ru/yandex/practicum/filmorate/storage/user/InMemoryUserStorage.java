@@ -18,13 +18,13 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
-    public Collection<User> findAll() {
+    public Collection<User> get() {
         log.info("Получен список Пользователей.");
         return users.values();
     }
 
     @Override
-    public User create(User user) throws ValidationException {
+    public User add(User user) throws ValidationException {
         for (User value : users.values()) {
             if (user.getEmail().equals(value.getEmail())) {
                 log.error(String.format("Email %s уже существует.", user.getEmail()));
@@ -60,29 +60,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> getById(Long id) {
         log.debug("Выполняем поиск пользователя по id = {} ", id);
         return Optional.ofNullable(users.get(id));
-    }
-
-    public void updateFriends(User user) {
-        if (users.containsKey(user.getId())) {
-            User userStored = users.get(user.getId());
-            userStored.setFriends(user.getFriends());
-        } else {
-            throw new NotFoundException("Пользователь не найден");
-        }
-    }
-
-    @Override
-    public void updateLikes(User user) {
-        if (users.containsKey(user.getId())) {
-            User userStored = users.get(user.getId());
-            userStored.setLikedFilms(user.getLikedFilms());
-            log.debug("Фильм с id = {} обновлён с новым количеством лайков", user.getId());
-        } else {
-            throw new NotFoundException("Фильм не найден");
-        }
     }
 
     private long getNextId() {

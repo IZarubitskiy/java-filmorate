@@ -21,7 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
 
     @Override
-    public Collection<Film> findAll() {
+    public Collection<Film> get() {
         log.info("Получен список фильмов.");
         return films.values();
     }
@@ -71,17 +71,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Optional<Film> findById(Long id) {
         log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
         return Optional.ofNullable(films.get(id));
-    }
-
-    @Override
-    public void updateLikes(Film film) {
-        if (films.containsKey(film.getId())) {
-            Film filmStored = films.get(film.getId());
-            filmStored.setLikes(film.getLikes());
-            log.debug("Фильм с id = {} обновлён с новым количеством лайков", film.getId());
-        } else {
-            throw new NotFoundException("Фильм не найден");
-        }
     }
 
     private long getNextId() {
