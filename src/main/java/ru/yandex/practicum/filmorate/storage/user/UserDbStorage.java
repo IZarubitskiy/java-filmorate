@@ -65,8 +65,8 @@ public class UserDbStorage implements UserStorage{
     @Override
     public User getById(Long id){
         try {
-            return jdbcTemplate.queryForObject(USERS_SQL.concat(" where id = ?"), new UserMapper(), id);
             log.info("Найден пользователь с id {}", id);
+            return jdbcTemplate.queryForObject(USERS_SQL.concat(" where id = ?"), new UserMapper(), id);
         }
         catch (Exception e) {
             return null;
