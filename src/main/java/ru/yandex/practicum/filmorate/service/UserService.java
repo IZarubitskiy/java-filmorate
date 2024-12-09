@@ -37,7 +37,6 @@ public class UserService {
         return userStorage.findById(id);
     }
 
-    // переделать дружбу
     public User addFriend(Long userId, Long friendId) {
         User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msg));
         User friend = userStorage.findById(friendId).orElseThrow(() -> new NotFoundException(msg));
@@ -60,7 +59,7 @@ public class UserService {
         log.info("Пользователь с id = {} добавил в друзья пользователя с id = {}.", userId, friendId);
         return user;
     }
-    // переделать дружбу
+
     public User removerFriend(Long userId, long notFriendId) {
         User user = userStorage.findById(userId).orElseThrow(() -> new NotFoundException(msg));
         User friend = userStorage.findById(notFriendId).orElseThrow(() -> new NotFoundException(msg));
@@ -76,7 +75,7 @@ public class UserService {
 
         return user;
     }
-// переделать дружбу
+
     public Collection<User> getFriends(Long userId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new NotFoundException(msg));
@@ -86,7 +85,7 @@ public class UserService {
                         .orElseThrow(() -> new NotFoundException(msg)))
                 .collect(Collectors.toList());
     }
-    // переделать дружбу
+
     public Collection<User> getCommonFriends(Long userId, long otherId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new NotFoundException(msg));

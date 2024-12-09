@@ -10,8 +10,6 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(of = {"name"})
@@ -28,17 +26,15 @@ public class Film {
     @NonNull
     @Positive(message = "Продолжительность должна быть положительным числом")
     Integer duration;
-    Long rate = 0L;
-    Set<String> genre = new HashSet<>();
-    String rating;
+    Long likes = 0L;
 
     public void increaseLikes() {
-        rate++;
+        likes++;
     }
 
     public void decreaseLikes() {
-        if (rate > 0) {
-            rate--;
+        if (likes > 0) {
+            likes--;
         }
     }
 
