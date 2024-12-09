@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getName() == null || user.getName().isBlank()) {
             log.warn("Имя не задано при добавлении.");
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при добавлении");
+            log.debug("Вместо имени использован логин {} при добавлении", user.getLogin());
         }
         user.setId(getNextId());
         log.debug("Пользователю \"{}\" назначен id = {}", user.getName(), user.getId());
@@ -49,7 +49,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getName() == null || user.getName().isBlank()) {
             log.warn("Имя не задано при обновлении.");
             user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при обновлении");
+            log.debug("Вместо имени использован логин {} при обновлении", user.getLogin());
         }
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);

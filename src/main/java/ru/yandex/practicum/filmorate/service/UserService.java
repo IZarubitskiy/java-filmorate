@@ -42,12 +42,12 @@ public class UserService {
         User friend = userStorage.findById(friendId).orElseThrow(() -> new NotFoundException(msg));
 
         if (user.getFriends().contains(friendId)) {
-            log.error("Попытка добавления в друзья пользователя, являющегося другом.");
+            log.error("Добавление в друзья пользователя, являющегося другом.");
             throw new ValidationException("Пользователь уже является другом.");
         }
 
         if (friend.getFriends().contains(userId)) {
-            log.error("Попытка добавления в друзья пользователя, являющегося другом.");
+            log.error("Добавление в друзья пользователя, являющегося другом.");
             throw new ValidationException("Пользователь уже является другом.");
         }
         user.getFriends().add(friendId);
@@ -55,7 +55,9 @@ public class UserService {
         friend.getFriends().add(userId);
         log.debug("Добавление в список друзей пользователя с id = {} друга с id = {}.", friendId, userId);
         userStorage.updateFriends(user);
+        log.debug("Обновление инициатора с is= {} в базе пользователей, после добавления друга.", userId);
         userStorage.updateFriends(friend);
+        log.debug("Обновление пользователя с is= {} в базе пользователей, после добавления друга.", friendId);
         log.info("Пользователь с id = {} добавил в друзья пользователя с id = {}.", userId, friendId);
         return user;
     }
@@ -70,7 +72,9 @@ public class UserService {
         friend.getFriends().remove(userId);
         log.debug("Удаление из списка друзей пользователя с id = {} друга с id = {}.", notFriendId, userId);
         userStorage.updateFriends(user);
+        log.debug("Обновление инициатора с is= {} в базе пользователей, после удаления друга.", userId);
         userStorage.updateFriends(friend);
+        log.debug("Обновление пользователя с is= {} в базе пользователей, после удаления друга.", notFriendId);
         log.info("Пользователь с id = {} удалил из друзей пользователя с id = {}.", userId, notFriendId);
 
         return user;

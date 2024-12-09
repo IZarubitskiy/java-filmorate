@@ -44,7 +44,7 @@ public class FilmService {
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
 
         if (user.getLikedFilms().contains(filmId)) {
-            log.error("Попытка повторного добавление лайка");
+            log.error("Повторное добавление лайка");
             throw new ValidationException("Фильм уже в любимых.");
         }
 
@@ -53,7 +53,9 @@ public class FilmService {
         film.increaseLikes();
         log.debug("Увеличение количества лайков фильма с id = {}.", filmId);
         filmStorage.updateLikes(film);
+        log.debug("Обновление количества лайков фильма с id= {}. в базе фильмов", filmId);
         userStorage.updateFriends(user);
+        log.debug("Обновление списка любимых фильмов пользователя с id= {} в базе пользователей, лайк.", userId);
         log.info("Пользователь с id = {} поставил лайк фильму с id = {}.", userId, filmId);
         return film;
     }
@@ -68,7 +70,9 @@ public class FilmService {
             film.decreaseLikes();
             log.debug("Уменьшение количества лайков фильма с id = {}.", filmId);
             userStorage.updateFriends(user);
+            log.debug("Обновление списка любимых фильмов пользователя с id= {} в базе пользователей, дизлайк.", userId);
             filmStorage.updateLikes(film);
+            log.debug("Обновление фильма с id= {} в базе фильмов, после удаления лайка фильму.", userId);
             log.info("Пользователем с id = {} был удален лайк фильму \"{}\"", user.getName(), film.getName());
         } else {
             log.error("Удаление отсутствующего фильма из любимых");

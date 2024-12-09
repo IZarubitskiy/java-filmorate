@@ -30,13 +30,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film create(Film film) throws ValidationException {
         for (Film value : films.values()) {
             if (film.getName().equals(value.getName())) {
-                log.error("Попытка создать фильм с дублирующимся названием.");
+                log.error("Такое название уже есть");
                 throw new DuplicationException("Дублирование названия при добавлении");
             }
         }
 
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.error("Попытка создать фильм несоответствующей датой.");
+            log.error("При добавлении выбрана не соответствующая дата фильма.");
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
 
@@ -50,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film update(Film film) throws ValidationException {
         if (film.getId() == null) {
-            log.error("Попытка обновления фильма без указания Id.");
+            log.error("Id не указан");
             throw new ValidationException("Id должен быть указан");
 
         }
@@ -69,7 +69,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> findById(Long id) {
-        log.info("Поиск фильма по id.");
+        log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
         return Optional.ofNullable(films.get(id));
     }
 
