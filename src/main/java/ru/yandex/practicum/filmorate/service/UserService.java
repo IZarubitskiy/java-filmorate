@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ public class UserService {
 
     private final String msg = "Пользователь не найден";
     private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
 
     public Collection<User> findAll() {
         return userStorage.get();
@@ -29,8 +31,12 @@ public class UserService {
         return userStorage.update(newUser);
     }
 
-    public Optional<User> findById(Long id) {
+    public User findById(Long id) {
         return userStorage.getById(id);
     }
+
+    public Collection<User> getFriends (Long id) {return userStorage.getFriends(id);}
+
+
 
 }

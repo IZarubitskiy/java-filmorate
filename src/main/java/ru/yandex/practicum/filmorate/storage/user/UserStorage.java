@@ -15,9 +15,11 @@ public interface UserStorage {
 
     User getById(Long id);
 
-    Collection<User> getFriends(Integer userId);
+    Collection<User> getFriends(Long id);
 
-    Collection<User> getCommonFriends(Integer user1Id, Integer user2Id);
+    Collection<User> getCommonFriends(Long user1Id, Long user2Id);
 
-    boolean deleteUserById(Integer id);
+    boolean deleteUserById(Long id);
+
+    boolean contains(Long id );
 }

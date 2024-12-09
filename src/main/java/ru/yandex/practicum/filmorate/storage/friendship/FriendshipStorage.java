@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 
 public interface FriendshipStorage {
 
-    Collection<User> get(Long userId);
+    void add(Long userId, Long friendId);
 
-    Collection<User> getCommon(Long userId, long otherId);
+    void remove(Long userId, Long friendId);
 
-    boolean add(Integer userId, Integer friendId);
-
-    void remove(Integer userId, Integer friendId);
+    void confirm (Long userId, Long friendId );
 
 }

@@ -31,6 +31,4 @@ public class User {
     @NonNull
     @Past
     LocalDate birthday;
-    Set<Long> friends = new HashSet<>();
-    Set<Long> likedFilms = new HashSet<>();
 }

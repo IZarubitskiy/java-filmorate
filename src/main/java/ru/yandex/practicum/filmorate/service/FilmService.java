@@ -28,19 +28,19 @@ public class FilmService {
     }
 
     public Film create(Film film) {
-        return filmStorage.create(film);
+        return filmStorage.add(film);
     }
 
     public Film update(Film newFilm) {
         return filmStorage.update(newFilm);
     }
 
-    public Optional<Film> findById(Long id) {
-        return filmStorage.findById(id);
+    public Film findById(Long id) {
+        return filmStorage.getById(id);
     }
 
     public Film like(Long filmId, Long userId) {
-        User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
+        /*User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
 
         if (user.getLikedFilms().contains(filmId)) {
@@ -57,11 +57,12 @@ public class FilmService {
         userStorage.updateLikes(user);
         log.debug("Обновление списка любимых фильмов пользователя с id= {} в базе пользователей, лайк.", userId);
         log.info("Пользователь с id = {} поставил лайк фильму с id = {}.", userId, filmId);
-        return film;
+        return film;*/
+        return null;
     }
 
     public Film unlike(Long filmId, Long userId) {
-        User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
+        /*User user = userStorage.getById(userId).orElseThrow(() -> new NotFoundException(msgUser));
         Film film = filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException(msgFilm));
 
         if (user.getLikedFilms().contains(filmId)) {
@@ -78,7 +79,8 @@ public class FilmService {
             log.error("Удаление отсутствующего фильма из любимых");
             throw new ValidationException("Фильма нет в любимых.");
         }
-        return film;
+        return film;*/
+        return null;
     }
 
     public Collection<Film> getPopular(int count) {
