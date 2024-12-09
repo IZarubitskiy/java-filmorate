@@ -53,7 +53,7 @@ public class FilmService {
         film.increaseLikes();
         log.debug("Увеличение количества лайков фильма с id = {}.", filmId);
         filmStorage.updateLikes(film);
-        userStorage.updateLikes(user);
+        userStorage.updateFriends(user);
         log.info("Пользователь с id = {} поставил лайк фильму с id = {}.", userId, filmId);
         return film;
     }
@@ -67,7 +67,7 @@ public class FilmService {
             log.debug("Удаление их списка любимых фильмов пользователя с id = {} фильма с id = {}.", userId, filmId);
             film.decreaseLikes();
             log.debug("Уменьшение количества лайков фильма с id = {}.", filmId);
-            userStorage.updateLikes(user);
+            userStorage.updateFriends(user);
             filmStorage.updateLikes(film);
             log.info("Пользователем с id = {} был удален лайк фильму \"{}\"", user.getName(), film.getName());
         } else {
