@@ -19,18 +19,19 @@ import java.util.Collection;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FilmService {
-    @Autowired
-    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
-    @Autowired
-    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final LikeStorage likeStorage;
 
     private final String  NOT_FOUND_USER = "Пользователь не найден";
     private final String  NOT_FOUND_FILM  = "Фильм не найден";
+    @Autowired
+    public FilmService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage")FilmStorage filmStorage, LikeStorage likeStorage) {
+        this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
+        this.likeStorage = likeStorage;
+    }
 
     public Collection<Film> get() {
         return filmStorage.get();
