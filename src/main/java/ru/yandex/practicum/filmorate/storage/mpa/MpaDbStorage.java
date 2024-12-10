@@ -19,7 +19,6 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Mpa getMpaById(Long mpaId) {
         try {
-            log.info("MPA с id = {} найден.", mpaId);
             return jdbcTemplate.queryForObject(MPAS_SQL.concat(" where id = ?"), new MpaMapper(), mpaId);
         }
         catch (Exception e) {

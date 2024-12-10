@@ -97,7 +97,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopular(Integer count, Integer genreId, Integer year) {
+    public Collection<Film> getPopular(Long count, Long genreId, Long year) {
         final Collection<String> params = new ArrayList<>();
         String sql =
                 "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join likes l on f.id = l.film_id " +

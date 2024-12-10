@@ -14,7 +14,7 @@ public interface FilmStorage {
 
     Film update(Film film);
 
-    Collection<Film> getPopular(Integer count, Integer genreId, Integer year);
+    Collection<Film> getPopular(Long count, Long genreId, Long year);
 
     boolean deleteFilmById(Long id);
 

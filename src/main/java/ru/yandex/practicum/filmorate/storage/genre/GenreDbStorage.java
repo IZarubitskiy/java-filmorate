@@ -19,10 +19,10 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public Genre getGenreById(Integer genreId) {
         try {
-            log.info("Жанр с id = {} найден.", genreId);
             return jdbcTemplate.queryForObject(genresSql.concat(" where id = ?"), new GenreMapper(), genreId);
         }
         catch (Exception e) {
+            log.info("Жанр с id = {} не найден.", genreId);
             return null;
         }
     }
