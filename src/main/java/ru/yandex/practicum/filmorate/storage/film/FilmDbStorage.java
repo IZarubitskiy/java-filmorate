@@ -6,17 +6,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.filmGenre.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.storage.filmMpa.FilmMpaStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.sql.PreparedStatement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Component("filmDbStorage")
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private static final String FILMS_SQL =
@@ -55,15 +56,27 @@ public class FilmDbStorage implements FilmStorage {
         return addExtraFields(film);
     }
 
-    @Override // проверить как будет работать поиск по объекту
+    @Override
     public Film getById(Long filmId) {
-        Film film = jdbcTemplate.queryForObject(FILMS_SQL.concat(" where f.id = ?"), Film.class, filmId);
         List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), filmId);
 
         if (!films.isEmpty()) {
             Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
 
-            return films.get(0).toBuilder().genres(filmGenres).build();
+            return films.getFirst().toBuilder().genres(filmGenres).build();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Film findByName(String name) {
+        List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), name);
+
+        if (!films.isEmpty()) {
+            Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(films.getFirst().getId());
+
+            return films.getFirst().toBuilder().genres(filmGenres).build();
         }
 
         return null;
@@ -96,29 +109,18 @@ public class FilmDbStorage implements FilmStorage {
         return addExtraFields(film);
     }
 
-    @Override
-    public Collection<Film> getPopular(Long count, Long genreId, Long year) {
+    public Collection<Film> getPopular(Long count) {
         final Collection<String> params = new ArrayList<>();
         String sql =
                 "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join likes l on f.id = l.film_id " +
                         "left join film_mpas fm on f.id = fm.film_id left join mpas m on fm.mpa_id = m.id " +
                         "left join film_genres fg on f.id = fg.film_id %s group by f.name, f.id order by count(l.film_id) desc limit ?";
 
-        if (Objects.nonNull(genreId)) {
-            params.add(String.format("genre_id = %s", genreId));
-        }
-
-        if (Objects.nonNull(year)) {
-            params.add(String.format("YEAR(release_date) = %s", year));
-        }
-
-        final String genreAndYearParams = !params.isEmpty() ? "where ".concat(String.join(" and ", params)) : "";
-        Collection<Film> films = jdbcTemplate.query(String.format(sql, genreAndYearParams), new FilmMapper(), count);
+        Collection<Film> films = jdbcTemplate.query(sql, new FilmMapper(), count);
 
         return setFilmGenres(films);
     }
 
-    @Override
     public boolean deleteFilmById(Long id) {
         final String sql = "delete from films where id = ?";
         int status = jdbcTemplate.update(sql, id);

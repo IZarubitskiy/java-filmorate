@@ -17,7 +17,7 @@ public class GenreDbStorage implements GenreStorage {
     private final String genresSql = "select * from genres";
 
     @Override
-    public Genre getGenreById(Integer genreId) {
+    public Genre getGenreById(Long genreId) {
         try {
             return jdbcTemplate.queryForObject(genresSql.concat(" where id = ?"), new GenreMapper(), genreId);
         }

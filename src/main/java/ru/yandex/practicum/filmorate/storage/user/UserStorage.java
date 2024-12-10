@@ -13,7 +13,7 @@ public interface UserStorage {
 
     User update(User user);
 
-    User getById(Long id);
+    Optional<User> getById(Long id);
 
     Collection<User> getFriends(Long id);
 
@@ -22,4 +22,6 @@ public interface UserStorage {
     boolean deleteUserById(Long id);
 
     boolean contains(Long id );
+
+    Optional<User> findByEmail(String email);
 }

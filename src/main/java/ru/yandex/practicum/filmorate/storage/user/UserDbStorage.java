@@ -12,9 +12,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.PreparedStatement;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
-@Component
+@Component("userDbStorage")
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage{
     private static final String USERS_SQL = "select * from users";
@@ -64,12 +65,12 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public User getById(Long id){
+    public Optional<User> getById(Long id){
         try {
-            return jdbcTemplate.queryForObject(USERS_SQL.concat(" where id = ?"), new UserMapper(), id);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(USERS_SQL.concat(" where id = ?"), new UserMapper(), id));
         }
         catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -81,7 +82,7 @@ public class UserDbStorage implements UserStorage{
         return jdbcTemplate.query(sql, new UserMapper(), id);
     }
 
-    @Override
+    @Override // получаем подтвержденных друзей?
     public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
         final String sql = "select * from users where id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?) and id in (select friend_id from users u join friendships f on " +
@@ -90,7 +91,6 @@ public class UserDbStorage implements UserStorage{
         return jdbcTemplate.query(sql, new UserMapper(), user1Id, user2Id);
     }
 
-    @Override
     public boolean deleteUserById(Long id){
         final String sql = "delete from users where id = ?";
         int status = jdbcTemplate.update(sql, id);
@@ -98,7 +98,15 @@ public class UserDbStorage implements UserStorage{
         return status != 0;
     }
 
-    @Override
+    public Optional<User> findByEmail(String email) {
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(USERS_SQL.concat(" where email = ?"), new UserMapper(), email));
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
     public boolean contains(Long id ){
         try {
             getById(id);
