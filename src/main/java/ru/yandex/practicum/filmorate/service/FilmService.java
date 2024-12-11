@@ -95,8 +95,8 @@ public class FilmService {
         if (filmStorage.getFilmById(filmId) == null) {
             throw new DuplicationException(msgFilm);
         }
-
-        likeStorage.deleteLikeFromFilm(filmId, userId); }
+        likeStorage.deleteLikeFromFilm(filmId, userId);
+    }
 
     public Collection<Film> getPopular(Long count) {
         return filmStorage.getPopular(count);
