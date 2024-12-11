@@ -64,11 +64,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     }
 
-    public Collection<User> getFriends(Long id) {
+    public Collection<User> getFriends(Long id){
         return null;
     }
 
-    public Collection<User> getCommonFriends(Long user1Id, Long user2Id) {
+    public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
         return null;
     }
 
