@@ -55,6 +55,7 @@ public class FilmService {
         if (film.getMpa().getId() > mpaStorage.getAllMpa().size()) {
             throw new ValidationException("точно зда");
         }
+
         for (Genre g : film.getGenres()) {
             if (g.getId() > genreStorage.getAllGenres().size()) {
                 throw new ValidationException("точно зда");
