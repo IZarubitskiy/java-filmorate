@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.FilmorateApplication;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public class FilmDbStorageTest {
             .duration(100)
             .mpa(new Mpa(1L, null))
             .rate(5L)
-            .genres(List.of(new Genre(1L, null),new Genre(2L, null)))
+            .genres(List.of(new Genre(1L, null), new Genre(2L, null)))
             .build();
     private Film newFilm;
 
