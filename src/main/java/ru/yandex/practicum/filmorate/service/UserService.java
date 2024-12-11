@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,7 +29,7 @@ public class UserService {
         this.friendshipStorage = friendshipStorage;
     }
 
-    public Collection<User> findAll() {
+    public Collection<User> get() {
         return userStorage.get();
     }
 
@@ -52,7 +53,13 @@ public class UserService {
     }
 
     public User update(User user) {
+        User user1 = userStorage.getUserById(user.getId())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
+        setUserName(user);
+
+        return userStorage.update(user);
+/*
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
             throw new ValidationException("Необходим email при обновлении.");
         }
@@ -66,48 +73,66 @@ public class UserService {
             log.debug("Вместо имени использован логин при обновлении");
         }
 
-        return userStorage.update(user);
+        if (userStorage.contains(user.getId())) {
+            return userStorage.update(user);
+        }
+        log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
+        throw new NotFoundException(String.format("Пользователь с id = %d  - не найден", user.getId()));*/
     }
 
-    public Optional<User> getById(Long id) {
-        return userStorage.getById(id);
+    public User getUserById(Long id) {
+        return userStorage.getUserById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
     }
 
     public Collection<User> getFriends (Long id) {
-        User user = userStorage.getById(id)
+        User user = userStorage.getUserById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
         return userStorage.getFriends(id);}
 
     public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
-        User user1 = userStorage.getById(user1Id)
+        /*User user1 = userStorage.getById(user1Id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
         User user2 = userStorage.getById(user2Id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
         return userStorage.getCommonFriends(user1Id, user2Id);
     }
 
     public void addFriend(Long userId, Long friendId) {
-        User user1 = userStorage.getById(userId)
+        User user1 = userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
-        User user2 = userStorage.getById(friendId)
+        User user2 = userStorage.getUserById(friendId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
         friendshipStorage.add(userId, friendId);
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        User user1 = userStorage.getById(userId)
+        User user1 = userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
-        User user2 = userStorage.getById(friendId)
+        User user2 = userStorage.getUserById(friendId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
-        friendshipStorage.remove(userId, friendId );
+        friendshipStorage.remove(userId, getUserById(friendId).getId() );
     }
 
     public void confirmFriend (Long userId, Long friendId ){
-        User user1 = userStorage.getById(userId)
+       /* User user1 = userStorage.getById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
         User user2 = userStorage.getById(friendId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
         friendshipStorage.confirm(userId, friendId);
+    }
+
+
+    private void checkUserIsNotFound(User user, Long id) {
+        if (UserValidator.isUserNotFound(user)) {
+            throw new NotFoundException(String.format(NOT_FOUND_USER, id));
+        }
+    }
+
+    private void setUserName(User user) {
+        if (!UserValidator.isUserNameValid(user.getName())) {
+            user.setName(user.getLogin());
+        }
     }
 
 }

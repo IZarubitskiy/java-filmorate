@@ -28,17 +28,17 @@ public class Film {
     @NonNull
     @Positive(message = "Продолжительность должна быть положительным числом")
     Integer duration;
-    Long rating = 0L;
+    Long rate = 0L;
     Mpa mpa;
-    private Collection<Genre> genres = new ArrayList<>();
+    Collection<Genre> genres = new ArrayList<>();
 
     public void increaseLikes() {
-        rating++;
+        rate++;
     }
 
     public void decreaseLikes() {
-        if (rating > 0) {
-            rating--;
+        if (rate > 0) {
+            rate--;
         }
     }
 

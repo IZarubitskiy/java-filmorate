@@ -1,39 +1,51 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.filmGenre.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.storage.filmMpa.FilmMpaStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component("filmDbStorage")
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private static final String FILMS_SQL =
-            "select f.*, m.id as mpa_id, " +
-                    "m.name as mpa_name " +
-                    "from films f " +
-                    "left join film_mpas fm on f.id = fm.film_id " +
+            "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join film_mpas fm on f.id = fm.film_id " +
                     "left join mpas m on fm.mpa_id = m.id";
+
     private final JdbcTemplate jdbcTemplate;
     private final FilmMpaStorage filmMpaStorage;
     private final MpaStorage mpaStorage;
     private final FilmGenreStorage filmGenreStorage;
+    private final GenreDbStorage genreStorage;
 
     @Override
-    public Film add(Film film) {
-        final String sql = "insert into films (name, release_date, description, duration, rating) " +
+    public Film addFilm(Film film) {
+
+
+
+        final String sql = "insert into films (name, release_date, description, duration, rate) " +
                 "values (?, ?, ?, ?, ?)";
 
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
@@ -44,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
             preparedStatement.setObject(2, film.getReleaseDate());
             preparedStatement.setString(3, film.getDescription());
             preparedStatement.setInt(4, film.getDuration());
-            preparedStatement.setLong(5, film.getRating());
+            preparedStatement.setLong(5, film.getRate());
 
             return preparedStatement;
         }, generatedKeyHolder);
@@ -56,6 +68,7 @@ public class FilmDbStorage implements FilmStorage {
         return addExtraFields(film);
     }
 
+
     @Override
     public Film getById(Long filmId) {
         List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), filmId);
@@ -63,15 +76,14 @@ public class FilmDbStorage implements FilmStorage {
         if (!films.isEmpty()) {
             Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
 
-            return films.getFirst().toBuilder().genres(filmGenres).build();
+            return films.get(0).toBuilder().genres(filmGenres).build();
         }
-
         return null;
     }
 
     @Override
     public Film findByName(String name) {
-        List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), name);
+        List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.name = ?"), new FilmMapper(), name);
 
         if (!films.isEmpty()) {
             Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(films.getFirst().getId());
@@ -102,13 +114,14 @@ public class FilmDbStorage implements FilmStorage {
                 film.getReleaseDate(),
                 film.getDescription(),
                 film.getDuration(),
-                film.getRating(),
+                film.getRate(),
                 film.getId()
         );
 
         return addExtraFields(film);
     }
 
+    @Override
     public Collection<Film> getPopular(Long count) {
         final Collection<String> params = new ArrayList<>();
         String sql =
@@ -120,13 +133,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return setFilmGenres(films);
     }
-
-    public boolean deleteFilmById(Long id) {
-        final String sql = "delete from films where id = ?";
-        int status = jdbcTemplate.update(sql, id);
-        return status != 0;
-    }
-
     private Collection<Film> setFilmGenres(Collection<Film> films) {
         Map<Long, Collection<Genre>> filmGenresMap = filmGenreStorage.getAllFilmGenres(films);
 
@@ -139,6 +145,21 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    public boolean deleteFilmById(Long id) {
+        final String sql = "delete from films where id = ?";
+        int status = jdbcTemplate.update(sql, id);
+        return status != 0;
+    }
+
+    private Film setFilmGenresAndMpa(Film film) {
+        Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(film.getId());
+        film.setGenres(filmGenres);
+        Mpa filmMpa = filmMpaStorage.getFilmMpaById(film.getId());
+        film.setMpa(filmMpa);
+
+        return film;
+    }
+
     private Film addExtraFields(Film film) {
 
         Long filmId = film.getId();
@@ -146,11 +167,10 @@ public class FilmDbStorage implements FilmStorage {
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
         film.getGenres().forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
-// зачем задублировал ?
+
         Mpa filmMpa = mpaStorage.getMpaById(mpaId);
         Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
 
         return film.toBuilder().mpa(filmMpa).genres(filmGenres).build();
     }
-
 }

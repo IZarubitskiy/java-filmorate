@@ -8,4 +8,6 @@ public interface MpaStorage {
     Mpa getMpaById(Long mpaId);
 
     Collection<Mpa> getAllMpa();
+
+    boolean containsMpa(Long mpaId);
 }

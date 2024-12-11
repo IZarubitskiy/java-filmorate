@@ -31,4 +31,19 @@ public class MpaDbStorage implements MpaStorage {
         log.info("Получен список MPA.");
         return jdbcTemplate.query(MPAS_SQL, new MpaMapper());
     }
+
+    @Override
+
+    public boolean containsMpa(Long mpaId){
+        Integer count = jdbcTemplate.queryForObject(
+                MPAS_SQL.concat(" where id = ?"),
+                Integer.class,
+                mpaId
+        );
+
+        if (count == null || count == 0) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -5,18 +5,16 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class UserMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new User()
-                .toBuilder()
-                .id(rs.getLong("id"))
-                .name(rs.getString("name"))
-                .login(rs.getString("login"))
-                .birthday(Objects.requireNonNull(rs.getDate("birthday")).toLocalDate())
-                .email(rs.getString("email"))
-                .build();
+        User user = new User();
+        user.setId(rs.getLong("id"));
+        user.setEmail(rs.getString("email"));
+        user.setLogin(rs.getString("login"));
+        user.setName(rs.getString("name"));
+        user.setBirthday(rs.getDate("birthday").toLocalDate());
+        return user;
     }
 }

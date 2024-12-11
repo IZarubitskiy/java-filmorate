@@ -13,7 +13,7 @@ public interface UserStorage {
 
     User update(User user);
 
-    Optional<User> getById(Long id);
+    Optional<User> getUserById(Long id);
 
     Collection<User> getFriends(Long id);
 

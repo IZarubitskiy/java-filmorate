@@ -9,4 +9,5 @@ public interface FilmMpaStorage {
     Mpa getFilmMpaById(Long filmId);
 
     void deleteFilmMpaById(Long filmId);
+
 }

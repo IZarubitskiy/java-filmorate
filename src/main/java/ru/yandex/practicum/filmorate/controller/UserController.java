@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -20,11 +19,11 @@ public class UserController {
 
     @GetMapping("/users")
     public Collection<User> findAllUsers() {
-        return userService.findAll();
+        return userService.get();
     }
 
     @PostMapping("/users")
-    public User create(@Valid @RequestBody User user) {
+    public User add(@Valid @RequestBody User user) {
         return userService.add(user);
     }
 
@@ -34,8 +33,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<User> findByID(@PathVariable("id") Long id) {
-        return userService.getById(id);
+    public User getByID(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
