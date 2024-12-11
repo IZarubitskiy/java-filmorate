@@ -28,8 +28,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
 
         try {
             jdbcTemplate.update(sql, filmId, genreId);
-        }
-        catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             log.warn("Обнаружен дубликат ключей. filmId: {}, genreId: {}", filmId, genreId);
         }
     }

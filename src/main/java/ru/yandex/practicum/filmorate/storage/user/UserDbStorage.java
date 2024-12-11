@@ -18,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 @Component("userDbStorage")
 @RequiredArgsConstructor
-public class UserDbStorage implements UserStorage{
+public class UserDbStorage implements UserStorage {
     private static final String USERS_SQL = "select * from users";
     private final JdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public User add(User user){
+    public User add(User user) {
         final String sql = "insert into users (name, login, birthday, email) values (?, ?, ?, ?)";
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
@@ -55,7 +55,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public User update(User user){
+    public User update(User user) {
         final String sql = "update users set name = ?, login = ?, birthday = ?, email = ? where id = ?";
 
         jdbcTemplate.update(
@@ -67,17 +67,16 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public Optional<User> getUserById(Long id){
+    public Optional<User> getUserById(Long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(USERS_SQL.concat(" where id = ?"), new UserMapper(), id));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public Collection<User> getFriends(Long id){
+    public Collection<User> getFriends(Long id) {
         final String sql = "select * from users where id in (select f.friend_id from users u join friendships f " +
                 "on u.id = f.user_id where u.id = ?)";
         log.info("Получен список друзей пользователя с id = {}", id);
@@ -85,15 +84,15 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override // получаем подтвержденных друзей?
-    public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
+    public Collection<User> getCommonFriends(Long user1Id, Long user2Id) {
         final String sql = "select * from users where id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?) and id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?)";
-        log.info("Получен список  общих друзей пользователей с id : {} и  {}.", user1Id , user2Id);
+        log.info("Получен список  общих друзей пользователей с id : {} и  {}.", user1Id, user2Id);
         return jdbcTemplate.query(sql, new UserMapper(), user1Id, user2Id);
     }
 
-    public boolean deleteUserById(Long id){
+    public boolean deleteUserById(Long id) {
         final String sql = "delete from users where id = ?";
         int status = jdbcTemplate.update(sql, id);
         log.info("Пользователь с id = {} удален.", id);
@@ -103,13 +102,12 @@ public class UserDbStorage implements UserStorage{
     public Optional<User> findByEmail(String email) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(USERS_SQL.concat(" where email = ?"), new UserMapper(), email));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    public boolean contains(Long id ){
+    public boolean contains(Long id) {
         try {
             getUserById(id);
             log.info("Найден пользователь ID_{}.", id);

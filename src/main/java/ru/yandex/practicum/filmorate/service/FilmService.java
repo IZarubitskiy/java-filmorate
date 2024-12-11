@@ -27,7 +27,7 @@ public class FilmService {
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
 
-    private final String  msgUser = "Пользователь не найден";
+    private final String msgUser = "Пользователь не найден";
     private final String msgFilm = "Фильм не найден";
 
     @Autowired

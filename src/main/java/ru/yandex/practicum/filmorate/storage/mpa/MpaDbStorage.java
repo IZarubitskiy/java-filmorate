@@ -13,15 +13,14 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class MpaDbStorage implements MpaStorage {
 
-    private final JdbcTemplate jdbcTemplate;
     private static final String MPAS_SQL = "select * from mpas";
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Mpa getMpaById(Long mpaId) {
         try {
             return jdbcTemplate.queryForObject(MPAS_SQL.concat(" where id = ?"), new MpaMapper(), mpaId);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -34,16 +33,13 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
 
-    public boolean containsMpa(Long mpaId){
+    public boolean containsMpa(Long mpaId) {
         Integer count = jdbcTemplate.queryForObject(
                 MPAS_SQL.concat(" where id = ?"),
                 Integer.class,
                 mpaId
         );
 
-        if (count == null || count == 0) {
-            return true;
-        }
-        return false;
+        return count == null || count == 0;
     }
 }

@@ -39,7 +39,6 @@ public class FilmDbStorage implements FilmStorage {
     public Film addFilm(Film film) {
 
 
-
         final String sql = "insert into films (name, release_date, description, duration, rate) " +
                 "values (?, ?, ?, ?, ?)";
 
@@ -128,6 +127,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return setFilmGenres(films);
     }
+
     private Collection<Film> setFilmGenres(Collection<Film> films) {
         Map<Long, Collection<Genre>> filmGenresMap = filmGenreStorage.getAllFilmGenres(films);
 
