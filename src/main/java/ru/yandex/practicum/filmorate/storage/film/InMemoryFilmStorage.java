@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DuplicationException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -10,24 +9,23 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Slf4j
-@Component
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
 
     @Override
-    public Collection<Film> findAll() {
+    public Collection<Film> get() {
         log.info("Получен список фильмов.");
         return films.values();
     }
 
     @Override
-    public Film create(Film film) throws ValidationException {
+    public Film addFilm(Film film) throws ValidationException {
         for (Film value : films.values()) {
             if (film.getName().equals(value.getName())) {
                 log.error("Такое название уже есть");
@@ -68,12 +66,27 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> findById(Long id) {
-        log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
-        return Optional.ofNullable(films.get(id));
+    public Collection<Film> getPopular(Long count, Long genreId, Long year) {
+        return List.of();
     }
 
     @Override
+    public boolean deleteFilmById(Long id) {
+        return false;
+    }
+
+    @Override
+    public Film findByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Film getFilmById(Long id) {
+        log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
+        return films.get(id);
+    }
+
+   /* @Override
     public void updateLikes(Film film) {
         if (films.containsKey(film.getId())) {
             Film filmStored = films.get(film.getId());
@@ -82,7 +95,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         } else {
             throw new NotFoundException("Фильм не найден");
         }
-    }
+    }*/
 
     private long getNextId() {
         long currentMaxId = films.keySet()

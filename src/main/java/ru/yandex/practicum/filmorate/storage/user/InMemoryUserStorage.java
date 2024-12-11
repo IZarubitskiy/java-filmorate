@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -12,19 +11,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-@Component
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
-    public Collection<User> findAll() {
+    public Collection<User> get() {
         log.info("Получен список Пользователей.");
         return users.values();
     }
 
     @Override
-    public User create(User user) throws ValidationException {
+    public User add(User user) throws ValidationException {
         for (User value : users.values()) {
             if (user.getEmail().equals(value.getEmail())) {
                 log.error(String.format("Email %s уже существует.", user.getEmail()));
@@ -60,11 +58,35 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> getUserById(Long id) {
         log.debug("Выполняем поиск пользователя по id = {} ", id);
         return Optional.ofNullable(users.get(id));
+
     }
 
+    public Collection<User> getFriends(Long id) {
+        return null;
+    }
+
+    public Collection<User> getCommonFriends(Long user1Id, Long user2Id) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteUserById(Long id) {
+        return false;
+    }
+
+    @Override
+    public boolean contains(Long id) {
+        return false;
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.empty();
+    }
+/*
     public void updateFriends(User user) {
         if (users.containsKey(user.getId())) {
             User userStored = users.get(user.getId());
@@ -83,7 +105,7 @@ public class InMemoryUserStorage implements UserStorage {
         } else {
             throw new NotFoundException("Фильм не найден");
         }
-    }
+    }*/
 
     private long getNextId() {
         long currentMaxId = users.keySet()
