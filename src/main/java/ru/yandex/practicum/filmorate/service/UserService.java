@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private final String NOT_FOUND_USER = "Пользователь не найден";
+    private final String msgUser = "Пользователь не найден";
     private final UserStorage userStorage;
     private final FriendshipStorage friendshipStorage;
 
@@ -54,40 +54,21 @@ public class UserService {
 
     public User update(User user) {
         User user1 = userStorage.getUserById(user.getId())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
 
         setUserName(user);
 
         return userStorage.update(user);
-/*
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            throw new ValidationException("Необходим email при обновлении.");
-        }
-        if (user.getId() == null) {
-            log.error("Id не указан");
-            throw new ValidationException("Id должен быть указан");
-        }
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.debug("Вместо имени использован логин при обновлении");
-        }
-
-        if (userStorage.contains(user.getId())) {
-            return userStorage.update(user);
-        }
-        log.error("Попытка обновить пользователя с несуществующим id = {}", user.getId());
-        throw new NotFoundException(String.format("Пользователь с id = %d  - не найден", user.getId()));*/
     }
 
     public User getUserById(Long id) {
         return userStorage.getUserById(id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
     }
 
     public Collection<User> getFriends (Long id) {
         User user = userStorage.getUserById(id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
         return userStorage.getFriends(id);}
 
     public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
@@ -100,17 +81,17 @@ public class UserService {
 
     public void addFriend(Long userId, Long friendId) {
         User user1 = userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
         User user2 = userStorage.getUserById(friendId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
         friendshipStorage.add(userId, friendId);
     }
 
     public void removeFriend(Long userId, Long friendId) {
         User user1 = userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
         User user2 = userStorage.getUserById(friendId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(msgUser));
         friendshipStorage.remove(userId, getUserById(friendId).getId() );
     }
 
@@ -125,7 +106,7 @@ public class UserService {
 
     private void checkUserIsNotFound(User user, Long id) {
         if (UserValidator.isUserNotFound(user)) {
-            throw new NotFoundException(String.format(NOT_FOUND_USER, id));
+            throw new NotFoundException(String.format(msgUser, id));
         }
     }
 
