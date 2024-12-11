@@ -99,4 +99,12 @@ public class FilmDbStorageTest {
         assertEquals(updatedFilm.getMpa().getId(), newFilm.getMpa().getId());
         assertEquals(updatedFilm.getMpa().getName(), "G");
     }
+
+    @Test
+    public void getPopular(){
+        Collection<Film> popularFilms = filmStorage.getPopular(3L, null, null);
+
+
+
+    }
 }

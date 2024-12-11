@@ -66,7 +66,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopular(Long count) {
+    public Collection<Film> getPopular(Long count, Long genreId, Long year) {
         return List.of();
     }
 

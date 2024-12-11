@@ -48,10 +48,7 @@ public class FilmService {
             log.error("При добавлении выбрана не соответствующая дата фильма.");
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
-/*
-        if (filmStorage.findByName(film.getName()) != null) {
-            throw new DuplicationException("Дублирование названия при добавлении");
-        }*/
+
         if (film.getMpa().getId() > mpaStorage.getAllMpa().size()) {
             throw new ValidationException("точно зда");
         }
@@ -96,8 +93,8 @@ public class FilmService {
         likeStorage.deleteLikeFromFilm(filmId, userId);
     }
 
-    public Collection<Film> getPopular(Long count) {
-        return filmStorage.getPopular(count);
+    public Collection<Film> getPopular(Long count, Long genreId, Long year) {
+        return filmStorage.getPopular(count, genreId, year);
     }
 
     public void deleteFilmById(Long id) {
