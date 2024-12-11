@@ -66,16 +66,13 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(msgUser));
     }
 
-    public Collection<User> getFriends (Long id) {
+    public Collection<User> getFriends(Long id) {
         User user = userStorage.getUserById(id)
                 .orElseThrow(() -> new NotFoundException(msgUser));
-        return userStorage.getFriends(id);}
+        return userStorage.getFriends(id);
+    }
 
-    public Collection<User> getCommonFriends(Long user1Id, Long user2Id){
-        /*User user1 = userStorage.getById(user1Id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
-        User user2 = userStorage.getById(user2Id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
+    public Collection<User> getCommonFriends(Long user1Id, Long user2Id) {
         return userStorage.getCommonFriends(user1Id, user2Id);
     }
 
@@ -92,14 +89,10 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(msgUser));
         User user2 = userStorage.getUserById(friendId)
                 .orElseThrow(() -> new NotFoundException(msgUser));
-        friendshipStorage.remove(userId, getUserById(friendId).getId() );
+        friendshipStorage.remove(userId, getUserById(friendId).getId());
     }
 
-    public void confirmFriend (Long userId, Long friendId ){
-       /* User user1 = userStorage.getById(userId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
-        User user2 = userStorage.getById(friendId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
+    public void confirmFriend(Long userId, Long friendId) {
         friendshipStorage.confirm(userId, friendId);
     }
 
