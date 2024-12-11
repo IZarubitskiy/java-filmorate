@@ -27,7 +27,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public void confirm (Long userId, Long friendId ){
+    public void confirm(Long userId, Long friendId) {
         final String sql = "update friendships set confirmation = ? where user_id = ? and friend_id = ?";
         log.info("Пользователь с id = {} подтвердил дружбу с пользователем с id = {}.", userId, friendId);
         jdbcTemplate.update(sql, true, userId, friendId);
