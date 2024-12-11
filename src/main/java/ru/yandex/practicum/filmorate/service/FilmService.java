@@ -90,8 +90,6 @@ public class FilmService {
 
     public void deleteLikeFromFilm(Long filmId, Long userId) {
 
-      /*  User user = userStorage.getById(userId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
         if (filmStorage.getFilmById(filmId) == null) {
             throw new DuplicationException(msgFilm);
         }
