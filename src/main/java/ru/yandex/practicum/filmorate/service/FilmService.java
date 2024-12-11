@@ -8,8 +8,9 @@ import ru.yandex.practicum.filmorate.exception.DuplicationException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -24,16 +25,18 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeStorage likeStorage;
     private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
 
     private final String  NOT_FOUND_USER = "Пользователь не найден";
     private final String  NOT_FOUND_FILM  = "Фильм не найден";
 
     @Autowired
-    public FilmService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage")FilmStorage filmStorage, LikeStorage likeStorage, MpaStorage mpaStorage) {
+    public FilmService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage") FilmStorage filmStorage, LikeStorage likeStorage, MpaStorage mpaStorage, GenreStorage genreStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
         this.likeStorage = likeStorage;
         this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
     }
 
     public Collection<Film> get() {
@@ -45,12 +48,17 @@ public class FilmService {
             log.error("При добавлении выбрана не соответствующая дата фильма.");
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
-
+/*
         if (filmStorage.findByName(film.getName()) != null) {
             throw new DuplicationException("Дублирование названия при добавлении");
-        }
-        if (film.getMpa().getId() > 9 ){
+        }*/
+        if (film.getMpa().getId() > mpaStorage.getAllMpa().size()) {
             throw new ValidationException("точно зда");
+        }
+        for (Genre g : film.getGenres()) {
+            if (g.getId() > genreStorage.getAllGenres().size()) {
+                throw new ValidationException("точно зда");
+            }
         }
 
         return filmStorage.addFilm(film);
@@ -64,22 +72,15 @@ public class FilmService {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Выбрана дата до 28 декабря 1895 года.");
         }
-/*
-        if (filmStorage.getById(film.getId()) == null) {
-            throw new NotFoundException(NOT_FOUND_FILM);
-        }
-*/
         return filmStorage.update(film);
     }
 
-    public Film getById(Long id) {
-        return filmStorage.getById(id);
+    public Film getFilmById(Long id) {
+        return filmStorage.getFilmById(id);
     }
 
     public void addLikeToFilm(Long filmId, Long userId) {
-        /*User user = userStorage.getById(userId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
-        if (filmStorage.getById(filmId) == null) {
+        if (filmStorage.getFilmById(filmId) == null) {
             throw new DuplicationException(NOT_FOUND_FILM);
         }
 
@@ -90,7 +91,7 @@ public class FilmService {
 
       /*  User user = userStorage.getById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
-        if (filmStorage.getById(filmId) == null) {
+        if (filmStorage.getFilmById(filmId) == null) {
             throw new DuplicationException(NOT_FOUND_FILM);
         }
 

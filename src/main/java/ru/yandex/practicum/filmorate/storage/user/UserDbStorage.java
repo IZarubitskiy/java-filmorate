@@ -7,12 +7,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -30,20 +27,6 @@ public class UserDbStorage implements UserStorage{
         log.info("Получен список Пользователей.");
         return jdbcTemplate.query(USERS_SQL, new UserMapper());
 
-    }
-
-    private User mapRowToUser(ResultSet resultSet, int rowNum) {
-        try {
-            User user = new User();
-            user.setId(resultSet.getLong("id"));
-            user.setEmail(resultSet.getString("email"));
-            user.setLogin(resultSet.getString("login"));
-            user.setName(resultSet.getString("name"));
-            user.setBirthday(resultSet.getDate("birthday").toLocalDate());
-            return user;
-        } catch (EmptyResultDataAccessException | SQLException e) {
-            throw new NotFoundException("Ошибка запроса, проверьте корректность данных.");
-        }
     }
 
     @Override

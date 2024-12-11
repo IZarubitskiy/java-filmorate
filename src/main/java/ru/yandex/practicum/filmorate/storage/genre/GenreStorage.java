@@ -8,4 +8,6 @@ public interface GenreStorage {
     Genre getGenreById(Long genreId);
 
     Collection<Genre> getAllGenres();
+
+    //    DROP TABLE film_mpas , film_genres , likes , films , mpas , users , genres , friendships CASCADE;
 }

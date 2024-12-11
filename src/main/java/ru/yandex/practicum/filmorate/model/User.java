@@ -8,8 +8,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
@@ -19,16 +17,13 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
     Long id;
-    @NonNull
     @NotBlank
     @Email
     String email;
     String name;
-    @NonNull
     @NotBlank
     @Pattern(regexp = "^\\S+$", message = "Логин не должен содержать пробелы")
     String login;
-    @NonNull
     @Past
     LocalDate birthday;
 }

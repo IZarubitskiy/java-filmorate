@@ -1,16 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -19,19 +14,19 @@ import ru.yandex.practicum.filmorate.storage.filmMpa.FilmMpaStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component("filmDbStorage")
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private static final String FILMS_SQL =
-            "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join film_mpas fm on f.id = fm.film_id " +
+            "select f.*," +
+                    " m.id as mpa_id," +
+                    " m.name as mpa_name " +
+                    "from films f " +
+                    "left join film_mpas fm on f.id = fm.film_id " +
                     "left join mpas m on fm.mpa_id = m.id";
 
     private final JdbcTemplate jdbcTemplate;
@@ -70,7 +65,7 @@ public class FilmDbStorage implements FilmStorage {
 
 
     @Override
-    public Film getById(Long filmId) {
+    public Film getFilmById(Long filmId) {
         List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), filmId);
 
         if (!films.isEmpty()) {

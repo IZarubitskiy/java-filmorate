@@ -18,14 +18,11 @@ import java.util.Collection;
 @AllArgsConstructor
 public class Film {
     Long id;
-    @NonNull
     @NotBlank
     String name;
     @Size(max = 200, message = "Описание не может быть длиннее 200 символов")
     String description;
-    @NonNull
     LocalDate releaseDate;
-    @NonNull
     @Positive(message = "Продолжительность должна быть положительным числом")
     Integer duration;
     Long rate = 0L;

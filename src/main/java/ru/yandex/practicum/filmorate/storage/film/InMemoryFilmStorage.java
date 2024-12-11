@@ -81,7 +81,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(Long id) {
+    public Film getFilmById(Long id) {
         log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
         return films.get(id);
     }
