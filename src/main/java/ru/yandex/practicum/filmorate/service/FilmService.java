@@ -27,8 +27,8 @@ public class FilmService {
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
 
-    private final String  NOT_FOUND_USER = "Пользователь не найден";
-    private final String  NOT_FOUND_FILM  = "Фильм не найден";
+    private final String  msgUser = "Пользователь не найден";
+    private final String msgFilm = "Фильм не найден";
 
     @Autowired
     public FilmService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage") FilmStorage filmStorage, LikeStorage likeStorage, MpaStorage mpaStorage, GenreStorage genreStorage) {
@@ -81,7 +81,7 @@ public class FilmService {
 
     public void addLikeToFilm(Long filmId, Long userId) {
         if (filmStorage.getFilmById(filmId) == null) {
-            throw new DuplicationException(NOT_FOUND_FILM);
+            throw new DuplicationException(msgFilm);
         }
 
         likeStorage.addLikeToFilm(filmId, userId);
@@ -92,7 +92,7 @@ public class FilmService {
       /*  User user = userStorage.getById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));*/
         if (filmStorage.getFilmById(filmId) == null) {
-            throw new DuplicationException(NOT_FOUND_FILM);
+            throw new DuplicationException(msgFilm);
         }
 
         likeStorage.deleteLikeFromFilm(filmId, userId); }
@@ -103,7 +103,7 @@ public class FilmService {
 
     public void deleteFilmById(Long id) {
         if (!filmStorage.deleteFilmById(id)) {
-            throw new NotFoundException(String.format(NOT_FOUND_FILM, id));
+            throw new NotFoundException(String.format(msgFilm, id));
         }
     }
 }
