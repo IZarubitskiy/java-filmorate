@@ -101,9 +101,8 @@ public class FilmDbStorageTest {
     }
 
     @Test
-    public void getPopular(){
+    public void getPopular() {
         Collection<Film> popularFilms = filmStorage.getPopular(3L, null, null);
-
 
 
     }
