@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-
 public class MpaService {
 
     private final MpaStorage mpaStorage;

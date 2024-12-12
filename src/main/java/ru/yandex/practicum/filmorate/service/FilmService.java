@@ -50,12 +50,12 @@ public class FilmService {
         }
 
         if (film.getMpa().getId() > mpaStorage.getAllMpa().size()) {
-            throw new ValidationException("точно зда");
+            throw new ValidationException("Рейтинга нет в Базе данных");
         }
 
         for (Genre g : film.getGenres()) {
             if (g.getId() > genreStorage.getAllGenres().size()) {
-                throw new ValidationException("точно зда");
+                throw new ValidationException("Жанра нет в Базе данных.");
             }
         }
 

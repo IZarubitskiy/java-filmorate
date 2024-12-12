@@ -33,7 +33,6 @@ public class FilmDbStorage implements FilmStorage {
     private final FilmMpaStorage filmMpaStorage;
     private final MpaStorage mpaStorage;
     private final FilmGenreStorage filmGenreStorage;
-    private final GenreDbStorage genreStorage;
 
     @Override
     public Film addFilm(Film film) {

@@ -86,17 +86,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 
-   /* @Override
-    public void updateLikes(Film film) {
-        if (films.containsKey(film.getId())) {
-            Film filmStored = films.get(film.getId());
-            filmStored.setLikes(film.getLikes());
-            log.debug("Фильм с id = {} обновлён с новым количеством лайков", film.getId());
-        } else {
-            throw new NotFoundException("Фильм не найден");
-        }
-    }*/
-
     private long getNextId() {
         long currentMaxId = films.keySet()
                 .stream()

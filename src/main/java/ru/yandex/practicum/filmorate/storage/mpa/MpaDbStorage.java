@@ -32,7 +32,6 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-
     public boolean containsMpa(Long mpaId) {
         Integer count = jdbcTemplate.queryForObject(
                 MPAS_SQL.concat(" where id = ?"),
