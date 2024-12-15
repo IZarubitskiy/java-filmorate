@@ -31,14 +31,4 @@ public class MpaDbStorage implements MpaStorage {
         return jdbcTemplate.query(MPAS_SQL, new MpaMapper());
     }
 
-    @Override
-    public boolean containsMpa(Long mpaId) {
-        Integer count = jdbcTemplate.queryForObject(
-                MPAS_SQL.concat(" where id = ?"),
-                Integer.class,
-                mpaId
-        );
-
-        return count == null || count == 0;
-    }
 }

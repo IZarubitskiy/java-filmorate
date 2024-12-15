@@ -3,12 +3,13 @@ package ru.yandex.practicum.filmorate.storage.film;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface FilmStorage {
 
     Film addFilm(Film film);
 
-    Film getFilmById(Long id);
+    Optional<Film> getFilmById(Long filmId);
 
     Collection<Film> get();
 
@@ -18,6 +19,6 @@ public interface FilmStorage {
 
     boolean deleteFilmById(Long id);
 
-    Film findByName(String name);
+    // Film findByName(String name);
 
 }

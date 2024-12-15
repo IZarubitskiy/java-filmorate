@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
@@ -76,14 +73,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findByName(String name) {
-        return null;
-    }
-
-    @Override
-    public Film getFilmById(Long id) {
+    public Optional<Film> getFilmById(Long id) {
         log.debug("Выполняем поиск фильма в коллекции фильмов по id = {} ", id);
-        return films.get(id);
+        return Optional.empty();
     }
 
     private long getNextId() {

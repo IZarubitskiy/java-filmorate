@@ -9,5 +9,4 @@ public interface MpaStorage {
 
     Collection<Mpa> getAllMpa();
 
-    boolean containsMpa(Long mpaId);
 }

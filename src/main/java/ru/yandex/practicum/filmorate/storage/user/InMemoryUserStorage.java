@@ -78,34 +78,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean contains(Long id) {
-        return false;
-    }
-
-    @Override
     public Optional<User> findByEmail(String email) {
         return Optional.empty();
     }
-/*
-    public void updateFriends(User user) {
-        if (users.containsKey(user.getId())) {
-            User userStored = users.get(user.getId());
-            userStored.setFriends(user.getFriends());
-        } else {
-            throw new NotFoundException("Пользователь не найден");
-        }
-    }
-
-    @Override
-    public void updateLikes(User user) {
-        if (users.containsKey(user.getId())) {
-            User userStored = users.get(user.getId());
-            userStored.setLikedFilms(user.getLikedFilms());
-            log.debug("Фильм с id = {} обновлён с новым количеством лайков", user.getId());
-        } else {
-            throw new NotFoundException("Фильм не найден");
-        }
-    }*/
 
     private long getNextId() {
         long currentMaxId = users.keySet()

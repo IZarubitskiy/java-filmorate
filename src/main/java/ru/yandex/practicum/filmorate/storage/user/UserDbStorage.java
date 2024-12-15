@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -107,14 +106,4 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    public boolean contains(Long id) {
-        try {
-            getUserById(id);
-            log.info("Найден пользователь ID_{}.", id);
-            return true;
-        } catch (EmptyResultDataAccessException ex) {
-            log.info("Не найден пользователь ID_{}.", id);
-            return false;
-        }
-    }
 }

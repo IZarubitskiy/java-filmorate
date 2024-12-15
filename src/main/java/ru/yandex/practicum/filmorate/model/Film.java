@@ -29,14 +29,4 @@ public class Film {
     Mpa mpa;
     Collection<Genre> genres = new ArrayList<>();
 
-    public void increaseLikes() {
-        rate++;
-    }
-
-    public void decreaseLikes() {
-        if (rate > 0) {
-            rate--;
-        }
-    }
-
 }

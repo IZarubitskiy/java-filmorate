@@ -10,9 +10,9 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -96,17 +96,9 @@ public class UserService {
         friendshipStorage.confirm(userId, friendId);
     }
 
-
-    private void checkUserIsNotFound(User user, Long id) {
-        if (UserValidator.isUserNotFound(user)) {
-            throw new NotFoundException(String.format(msgUser, id));
-        }
-    }
-
     private void setUserName(User user) {
-        if (!UserValidator.isUserNameValid(user.getName())) {
+        if (Objects.nonNull(user.getName()) && !user.getName().isEmpty() && !user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
-
 }

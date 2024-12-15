@@ -7,14 +7,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.filmGenre.FilmGenreStorage;
-import ru.yandex.practicum.filmorate.storage.filmMpa.FilmMpaStorage;
-import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.sql.PreparedStatement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component("filmDbStorage")
@@ -29,9 +27,6 @@ public class FilmDbStorage implements FilmStorage {
                     "left join mpas m on fm.mpa_id = m.id";
 
     private final JdbcTemplate jdbcTemplate;
-    private final FilmMpaStorage filmMpaStorage;
-    private final MpaStorage mpaStorage;
-    private final FilmGenreStorage filmGenreStorage;
 
     @Override
     public Film addFilm(Film film) {
@@ -57,49 +52,28 @@ public class FilmDbStorage implements FilmStorage {
 
         film.setId(filmId);
 
-        return addExtraFields(film);
+        return film;
     }
 
 
     @Override
-    public Film getFilmById(Long filmId) {
-        List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), filmId);
-
-        if (!films.isEmpty()) {
-            Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
-
-            return films.get(0).toBuilder().genres(filmGenres).build();
+    public Optional<Film> getFilmById(Long filmId) {
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(FILMS_SQL.concat(" where f.id = ?"), new FilmMapper(), filmId));
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return null;
-    }
-
-    @Override
-    public Film findByName(String name) {
-        List<Film> films = jdbcTemplate.query(FILMS_SQL.concat(" where f.name = ?"), new FilmMapper(), name);
-
-        if (!films.isEmpty()) {
-            Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(films.getFirst().getId());
-
-            return films.getFirst().toBuilder().genres(filmGenres).build();
-        }
-
-        return null;
     }
 
     @Override
     public Collection<Film> get() {
-        Collection<Film> films = jdbcTemplate.query(FILMS_SQL, new FilmMapper());
-
-        return setFilmGenres(films);
+        return jdbcTemplate.query(FILMS_SQL, new FilmMapper());
     }
 
     @Override
     public Film update(Film film) {
         final String sql = "update films set name = ?, release_date = ?, description = ?, duration = ?, " +
                 "rate = ? where id = ?";
-
-        filmMpaStorage.deleteFilmMpaById(film.getId());
-        filmGenreStorage.deleteAllFilmGenresById(film.getId());
 
         jdbcTemplate.update(sql,
                 film.getName(),
@@ -110,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId()
         );
 
-        return addExtraFields(film);
+        return film;
     }
 
     @Override
@@ -130,21 +104,8 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         final String genreAndYearParams = !params.isEmpty() ? "where ".concat(String.join(" and ", params)) : "";
-        Collection<Film> films = jdbcTemplate.query(String.format(sql, genreAndYearParams), new FilmMapper(), count);
 
-        return setFilmGenres(films);
-    }
-
-    private Collection<Film> setFilmGenres(Collection<Film> films) {
-        Map<Long, Collection<Genre>> filmGenresMap = filmGenreStorage.getAllFilmGenres(films);
-
-        films.forEach(film -> {
-            Long filmId = film.getId();
-
-            film.setGenres(filmGenresMap.getOrDefault(filmId, new ArrayList<>()));
-        });
-
-        return films;
+        return jdbcTemplate.query(String.format(sql, genreAndYearParams), new FilmMapper(), count);
     }
 
     public boolean deleteFilmById(Long id) {
@@ -153,26 +114,4 @@ public class FilmDbStorage implements FilmStorage {
         return status != 0;
     }
 
-    private Film setFilmGenresAndMpa(Film film) {
-        Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(film.getId());
-        film.setGenres(filmGenres);
-        Mpa filmMpa = filmMpaStorage.getFilmMpaById(film.getId());
-        film.setMpa(filmMpa);
-
-        return film;
-    }
-
-    private Film addExtraFields(Film film) {
-
-        Long filmId = film.getId();
-        Long mpaId = film.getMpa().getId();
-
-        filmMpaStorage.addFilmMpa(filmId, mpaId);
-        film.getGenres().forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
-
-        Mpa filmMpa = mpaStorage.getMpaById(mpaId);
-        Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
-
-        return film.toBuilder().mpa(filmMpa).genres(filmGenres).build();
-    }
 }
