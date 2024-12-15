@@ -97,7 +97,7 @@ public class UserService {
     }
 
     private void setUserName(User user) {
-        if (Objects.nonNull(user.getName()) && !user.getName().isEmpty() && !user.getName().isBlank()) {
+        if (!Objects.nonNull(user.getName()) && !user.getName().isEmpty() && !user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
