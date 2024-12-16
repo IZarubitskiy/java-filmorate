@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,13 +14,13 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping("/films")
-    public Collection<Film> findAll() {
-        return filmService.findAll();
+    public Collection<Film> get() {
+        return filmService.get();
     }
 
     @PostMapping("/films")
-    public Film create(@Valid @RequestBody Film film) {
-        return filmService.create(film);
+    public Film addFilm(@Valid @RequestBody Film film) {
+        return filmService.addFilm(film);
     }
 
     @PutMapping("/films")
@@ -30,26 +29,36 @@ public class FilmController {
     }
 
     @GetMapping("/films/{id}")
-    public Optional<Film> findByID(@PathVariable("id") Long id) {
-        return filmService.findById(id);
+    public Film getById(@PathVariable("id") Long id) {
+        return filmService.getFilmById(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public Film like(
+    public void addLikeToFilm(
             @PathVariable("id") Long id,
             @PathVariable("userId") Long userId) {
-        return filmService.like(id, userId);
+        filmService.addLikeToFilm(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public Film unlike(
+    public void deleteLikeFromFilm(
             @PathVariable("id") Long id,
             @PathVariable("userId") Long userId) {
-        return filmService.unlike(id, userId);
+        filmService.deleteLikeFromFilm(id, userId);
+    }
+
+    @DeleteMapping("/films/{id}/")
+    public void deleteFilmById(
+            @PathVariable("id") Long id) {
+        filmService.deleteFilmById(id);
     }
 
     @GetMapping("/films/popular")
-    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopular(count);
+    public Collection<Film> getPopular(@RequestParam(name = "count",
+            defaultValue = "10", required = false) Long count,
+                                       @RequestParam(name = "genreId", required = false) Long genreId,
+                                       @RequestParam(name = "year", required = false) Long year
+    ) {
+        return filmService.getPopular(count, genreId, year);
     }
 }
