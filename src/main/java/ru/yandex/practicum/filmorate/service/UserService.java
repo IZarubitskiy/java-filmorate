@@ -81,14 +81,10 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(msgUser));
         User user2 = userStorage.getUserById(friendId)
                 .orElseThrow(() -> new NotFoundException(msgUser));
-        friendshipStorage.add(userId, friendId);
+        friendshipStorage.add(user1.getId(), user2.getId());
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        User user1 = userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException(msgUser));
-        User user2 = userStorage.getUserById(friendId)
-                .orElseThrow(() -> new NotFoundException(msgUser));
         friendshipStorage.remove(userId, getUserById(friendId).getId());
     }
 

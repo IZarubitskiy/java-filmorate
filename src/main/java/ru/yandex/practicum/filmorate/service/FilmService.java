@@ -98,16 +98,10 @@ public class FilmService {
         User user = userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException(msgUser));
 
-        likeStorage.addLikeToFilm(filmId, userId);
+        likeStorage.addLikeToFilm(film.getId(), user.getId());
     }
 
     public void deleteLikeFromFilm(Long filmId, Long userId) {
-
-        Film film = filmStorage.getFilmById(filmId)
-                .orElseThrow(() -> new NotFoundException(msgFilm));
-        User user = userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException(msgUser));
-
         likeStorage.deleteLikeFromFilm(filmId, userId);
     }
 
@@ -116,9 +110,7 @@ public class FilmService {
     }
 
     public void deleteFilmById(Long id) {
-        if (!filmStorage.deleteFilmById(id)) {
-            throw new NotFoundException(msgFilm);
-        }
+        filmStorage.deleteFilmById(id);
     }
 
     private Film addExtraFields(Film film) {
