@@ -64,7 +64,6 @@ public class FilmDbStorageTest {
     @Test
     public void getFilmById() {
         Film filmFromBD = filmService.getFilmById(newFilm.getId());
-        System.out.println(filmFromBD);
         assertThat(filmFromBD).hasFieldOrPropertyWithValue("id", 1L);
         assertThat(filmFromBD).hasFieldOrPropertyWithValue("name", newFilm.getName());
         assertThat(filmFromBD).hasFieldOrPropertyWithValue("description", newFilm.getDescription());
@@ -88,7 +87,6 @@ public class FilmDbStorageTest {
     @Test
     public void updateFilm() {
         Film updatedFilm = filmService.update(newFilm.toBuilder().name("Фильм!").build());
-        System.out.println(updatedFilm.getId());
         assertThat(updatedFilm).hasFieldOrPropertyWithValue("id", 1L);
         assertThat(updatedFilm).hasFieldOrPropertyWithValue("name", "Фильм!");
         assertThat(updatedFilm).hasFieldOrPropertyWithValue("description", newFilm.getDescription());
